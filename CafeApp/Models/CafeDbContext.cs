@@ -6,9 +6,14 @@ namespace CafeApp.Models;
 
 public partial class CafeDbContext : DbContext
 {
-    public CafeDbContext() { }
+    public CafeDbContext()
+    {
+    }
 
-    public CafeDbContext(DbContextOptions<CafeDbContext> options) : base(options) { }
+    public CafeDbContext(DbContextOptions<CafeDbContext> options)
+        : base(options)
+    {
+    }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -61,6 +66,8 @@ public partial class CafeDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("roles_pkey");
 
             entity.ToTable("roles");
+
+            entity.HasIndex(e => e.Name, "roles_name_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)
@@ -117,6 +124,12 @@ public partial class CafeDbContext : DbContext
             entity.ToTable("users");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Login)
+                .HasMaxLength(50)
+                .HasColumnName("login");
+            entity.Property(e => e.Password)
+                .HasMaxLength(50)
+                .HasColumnName("password");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)

@@ -5,5 +5,35 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="CafeApp.MainWindow"
         Title="CafeApp">
-    Welcome to Avalonia!
+    
+    <StackPanel Orientation="Vertical"
+                Margin="20"
+                VerticalAlignment="Center">
+        <TextBlock Name="MessageTBlock"
+                   IsVisible="False"
+                   HorizontalAlignment="Center"
+                   Foreground="Red"
+                   Margin="0 0 0 10" />
+        <TextBox Name="LoginTBox"
+                 Watermark="Введите логин"
+                 Margin="0 0 0 10" />
+        <TextBox Name="PasswordTBox"
+                 Watermark="Введите пароль"
+                 Margin="0 0 0 10"
+                 PasswordChar="*" />
+        <Button Content="Войти"
+                Width="200"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Margin="0 0 0 5"
+                Name="AuthBtn"
+                Click="AuthBtn_OnClick" />
+        <Button Content="Зарегистрироваться"
+                Width="200"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Name="RegBtn"
+                Click="RegBtn_OnClick" />
+    </StackPanel>
+    
 </Window>
