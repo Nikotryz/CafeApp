@@ -9,8 +9,8 @@ create table users (
 	login varchar(50) not null,
 	password varchar(50) not null,
 	status varchar(50) not null,
-	user_photo varchar(50),
-	contract_photo varchar(50)
+	user_photo bytea,
+	contract_photo bytea
 );
 
 create table shifts (
