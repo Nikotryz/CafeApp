@@ -15,6 +15,10 @@ public partial class User
 
     public string Status { get; set; } = null!;
 
+    public byte[]? UserPhoto { get; set; }
+
+    public byte[]? ContractPhoto { get; set; }
+
     public virtual Role Role { get; set; } = null!;
 
     public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();

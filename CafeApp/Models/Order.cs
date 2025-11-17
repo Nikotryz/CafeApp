@@ -11,6 +11,8 @@ public partial class Order
 
     public int TableId { get; set; }
 
+    public int ClientsAmount { get; set; }
+
     public string Content { get; set; } = null!;
 
     public decimal TotalAmount { get; set; }

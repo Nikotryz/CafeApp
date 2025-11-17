@@ -26,6 +26,7 @@ public partial class CafeDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=cafe_db;Username=postgres;Password=900440");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +38,9 @@ public partial class CafeDbContext : DbContext
             entity.ToTable("orders");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ClientsAmount)
+                .HasDefaultValue(1)
+                .HasColumnName("clients_amount");
             entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
             entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
@@ -124,6 +128,7 @@ public partial class CafeDbContext : DbContext
             entity.ToTable("users");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ContractPhoto).HasColumnName("contract_photo");
             entity.Property(e => e.Login)
                 .HasMaxLength(50)
                 .HasColumnName("login");
@@ -134,6 +139,7 @@ public partial class CafeDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
+            entity.Property(e => e.UserPhoto).HasColumnName("user_photo");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)

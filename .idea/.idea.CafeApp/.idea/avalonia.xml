@@ -4,7 +4,9 @@
     <option name="projectPerEditor">
       <map>
         <entry key="CafeApp/AdminWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/App.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/MainWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/UserEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
       </map>
     </option>
   </component>
