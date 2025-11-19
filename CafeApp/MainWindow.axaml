@@ -1,8 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        SizeToContent="WidthAndHeight"
+        Height="400" Width="600"
+        CanResize="False"
         x:Class="CafeApp.MainWindow"
-        Title="CafeApp">
+        Title="ИС Кафе">
     
     <StackPanel Orientation="Vertical"
                 Margin="20"

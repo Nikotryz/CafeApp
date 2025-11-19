@@ -75,4 +75,9 @@ public partial class AdminWindow : Window
     {
         throw new System.NotImplementedException();
     }
+
+    private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        new ShiftEditWindow().Show();
+    }
 }
