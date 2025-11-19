@@ -2,7 +2,9 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Linq;
+using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeApp;
 
@@ -11,6 +13,8 @@ public partial class MainWindow : Window
     private TextBox loginTBox;
     private TextBox passwordTBox;
     private TextBlock messageTBlock;
+    
+    private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
     public MainWindow()
     {
@@ -30,7 +34,7 @@ public partial class MainWindow : Window
             return;
         }
         
-        var userAuth = CafeDbService.GetDbContext().Users.Include(x => x.Role).FirstOrDefault(u => u.Login == loginTBox.Text && u.Password == passwordTBox.Text);
+        var userAuth = _db.Users.Include(x => x.Role).FirstOrDefault(u => u.Login == loginTBox.Text && u.Password == passwordTBox.Text);
         var userRole = userAuth?.Role;
 
         if (userAuth == null)

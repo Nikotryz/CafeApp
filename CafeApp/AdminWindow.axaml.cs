@@ -7,6 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeApp;
 
@@ -19,13 +20,11 @@ public partial class AdminWindow : Window
 
     private Button editBtn;
     
-    private readonly CafeDbContext _db;
+    private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
     public AdminWindow()
     {
         InitializeComponent();
-
-        _db = CafeDbService.GetDbContext();
 
         searchTBox = this.FindControl<TextBox>("SearchTBox")!;
         usersDGrid = this.FindControl<DataGrid>("UsersDGrid")!;

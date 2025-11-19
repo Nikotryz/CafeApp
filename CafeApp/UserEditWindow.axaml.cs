@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using CafeApp.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeApp;
 
@@ -18,7 +19,7 @@ public partial class UserEditWindow : Window
     
     public List<Role> Roles { get; set; }
     
-    private readonly CafeDbContext _db;
+    private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
     public UserEditWindow()
     {
@@ -28,8 +29,6 @@ public partial class UserEditWindow : Window
     public UserEditWindow(User editUser)
     {
         InitializeComponent();
-        
-        _db = CafeDbService.GetDbContext();
         
         loginTBox = this.FindControl<TextBox>("LoginTBox");
         passwordTBox = this.FindControl<TextBox>("PasswordTBox");
