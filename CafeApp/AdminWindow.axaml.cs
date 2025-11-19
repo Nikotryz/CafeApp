@@ -14,10 +14,13 @@ namespace CafeApp;
 public partial class AdminWindow : Window
 {
     public List<User> UsersList { get; set; }
+    public List<Shift> ShiftsList { get; set; }
     
-    private TextBox searchTBox;
     private DataGrid usersDGrid;
+    private DataGrid shiftsDGrid;
 
+    private TextBox searchTBox;
+    
     private Button editBtn;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
@@ -27,10 +30,14 @@ public partial class AdminWindow : Window
         InitializeComponent();
 
         searchTBox = this.FindControl<TextBox>("SearchTBox")!;
+        
         usersDGrid = this.FindControl<DataGrid>("UsersDGrid")!;
+        shiftsDGrid = this.FindControl<DataGrid>("ShiftsDGrid")!;
+        
         editBtn = this.FindControl<Button>("EditBtn")!;
 
         usersDGrid.ItemsSource = _db.Users.Include(x => x.Role).ToList();
+        shiftsDGrid.ItemsSource = _db.Shifts.Include(x => x.Users).Include(x => x.Orders).ToList();
     }
 
     private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -59,8 +66,13 @@ public partial class AdminWindow : Window
         Close();
     }
 
-    private void DataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void UsersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         editBtn.IsEnabled = usersDGrid.SelectedItem != null;
+    }
+
+    private void ShiftsDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        throw new System.NotImplementedException();
     }
 }

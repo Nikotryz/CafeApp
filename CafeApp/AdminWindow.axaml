@@ -1,33 +1,16 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:CafeApp"
         x:DataType="vm:AdminWindow"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Height="1000" Width="800"
+        MinWidth="400" MinHeight="200"
         x:Class="CafeApp.AdminWindow"
-        Title="AdminWindow">
+        Title="Окно администратора">
     
         <TabControl>
                 <TabItem Header="Сотрудники" >
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                            </Grid.RowDefinitions>
-                                
+                        <Grid ColumnDefinitions="*, *, *, *, *, *, *"
+                              RowDefinitions="*, *, *, *, *">
                                     <DataGrid Grid.Row="1"
                                               Grid.ColumnSpan="7"
                                               Grid.RowSpan="4"
@@ -37,7 +20,7 @@
                                               CanUserReorderColumns="False"
                                               CanUserResizeColumns="True"
                                               ColumnWidth="*"
-                                              SelectionChanged="DataGrid_OnSelectionChanged">
+                                              SelectionChanged="UsersDataGrid_OnSelectionChanged">
                                             <DataGrid.Columns>
                                                     <DataGridTextColumn Header="Логин" 
                                                                         Binding="{Binding Login}"
@@ -60,6 +43,7 @@
                                          Grid.ColumnSpan="2"/>
                                 <Button Grid.Column="2"
                                         Content="Найти"
+                                        Width="100"
                                         Name="SearchBtn"
                                         Click="SearchBtn_OnClick"/>
                                 <Button Grid.Column="5"
@@ -75,13 +59,72 @@
                                         Name="LogOutBtn"
                                         Click="LogOutBtn_OnClick"
                                         Grid.Column="6"/>
+                        </Grid>
+                </TabItem>
+                <TabItem Header="Смены">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                            </Grid.RowDefinitions>
                                 
+                                    <DataGrid Grid.Row="1"
+                                              Grid.ColumnSpan="7"
+                                              Grid.RowSpan="4"
+                                              Name="ShiftsDGrid"
+                                              ItemsSource="{Binding ShiftsList}"
+                                              AutoGenerateColumns="False"
+                                              CanUserReorderColumns="False"
+                                              CanUserResizeColumns="True"
+                                              ColumnWidth="*"
+                                              SelectionChanged="ShiftsDataGrid_OnSelectionChanged">
+                                            <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Начало" 
+                                                                        Binding="{Binding ShiftStarted}"
+                                                                        Width="auto"/>
+                                                    <DataGridTextColumn Header="Конец" 
+                                                                        Binding="{Binding ShiftEnds}"
+                                                                        Width="auto"/>
+                                            </DataGrid.Columns>
+                                    </DataGrid>
+                                <!--
+                                <TextBox Height="30"
+                                         Width="200"
+                                         Name="SearchTBox"
+                                         Grid.ColumnSpan="2"/>
+                                <Button Grid.Column="2"
+                                        Content="Найти"
+                                        Name="SearchBtn"
+                                        Click="SearchBtn_OnClick"/>
+                                <Button Grid.Column="5"
+                                        Content="Удалить"
+                                        Name="DeleteBtn"
+                                        Click="DeleteBtn_OnClick"/>
+                                <Button Grid.Column="4"
+                                        Content="Изменить"
+                                        Name="EditBtn"
+                                        IsEnabled="False"
+                                        Click="EditBtn_OnClick"/>
+                                <Button Content="Выйти"
+                                        Name="LogOutBtn"
+                                        Click="LogOutBtn_OnClick"
+                                        Grid.Column="6"/>
+                                -->
                         </Grid>
                 </TabItem>
                 <TabItem Header="Заказы">
-                        <TextBlock Margin="5">Окно заказов</TextBlock>
-                </TabItem>
-                <TabItem Header="Смены">
                         <TextBlock Margin="5">Окно смен</TextBlock>
                 </TabItem>
                 <TabItem Header="Отчеты">
