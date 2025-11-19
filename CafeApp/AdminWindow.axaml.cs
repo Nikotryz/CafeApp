@@ -55,7 +55,8 @@ public partial class AdminWindow : Window
 
     private void LogOutBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        new MainWindow().Show();
+        Close();
     }
 
     private void DataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)

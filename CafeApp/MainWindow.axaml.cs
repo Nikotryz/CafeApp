@@ -63,6 +63,7 @@ public partial class MainWindow : Window
 
     private void RegBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        new RegistrationWindow().Show();
+        Close();
     }
 }

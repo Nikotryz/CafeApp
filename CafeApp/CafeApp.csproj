@@ -31,4 +31,11 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop" Version="11.3.6" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="RegistrationWindow.axaml.cs">
+        <DependentUpon>RegistrationWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>
