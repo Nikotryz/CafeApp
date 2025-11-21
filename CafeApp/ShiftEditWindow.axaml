@@ -1,9 +1,31 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="clr-namespace:CafeApp"
+        Height="800" Width="1200"
+        MinHeight="400" MinWidth="800"
         x:Class="CafeApp.ShiftEditWindow"
+        x:DataType="vm:ShiftEditWindow"
         Title="Создание/редактирование смены">
-    СОЗДАВАЙ СУКА!!!!!!!!!!!!!!
+    
+        <StackPanel Orientation="Vertical"
+                    Margin="25"
+                    VerticalAlignment="Center" >
+                <DatePicker Name="ShiftDPicker"
+                            Margin="0 0 0 10"></DatePicker>
+                <TimePicker Name="ShiftStartTPicker"
+                            Margin="0 0 0 10"></TimePicker>
+                <TimePicker Name="ShiftEndTPicker"
+                            Margin="0 0 0 10"></TimePicker>
+            <!--
+            <ListBox Name="UsersLBox"
+                     ItemsSource="Users">
+                <ListBoxItem>
+                    <DataTemplate>
+                        
+                    </DataTemplate>
+                </ListBoxItem>
+            </ListBox>
+            -->
+        </StackPanel>
+        
 </Window>

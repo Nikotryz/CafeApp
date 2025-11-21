@@ -40,7 +40,7 @@ public partial class App : Application
             "Host=localhost;Port=5432;Database=cafe_db;Username=postgres;Password=900440";
         
         var collection = new ServiceCollection();
-        collection.AddDbContext<CafeDbContext>(options => options.UseNpgsql(connectionString2));
+        collection.AddDbContext<CafeDbContext>(options => options.UseNpgsql(connectionString1));
 
         var services = collection.BuildServiceProvider();
         
