@@ -7,6 +7,7 @@
         <entry key="CafeApp/App.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/EditShiftWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/MainWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/ShiftEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/UserEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
       </map>
     </option>

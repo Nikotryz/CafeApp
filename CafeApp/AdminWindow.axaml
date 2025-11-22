@@ -62,18 +62,16 @@
                         </Grid>
                 </TabItem>
                 <TabItem Header="Смены">
-                        <Grid ColumnDefinitions="*, *, *, *, *, *, *"
-                              RowDefinitions="*, *, *, *, *">
-                                
-                                <Button Grid.Column="6"
-                                        Grid.Row="0"
-                                        Name="AddShiftBtn"
+                        <StackPanel Orientation="Vertical"
+                                    Margin="25"
+                                    HorizontalAlignment="Stretch">
+                                <Button Name="AddShiftBtn"
                                         Content="Добавить смену"
-                                        Click="AddShiftBtn_OnClick"></Button>
-                                
-                                    <DataGrid Grid.Row="1"
-                                              Grid.ColumnSpan="7"
-                                              Grid.RowSpan="4"
+                                        HorizontalAlignment="Right"
+                                        Click="AddShiftBtn_OnClick"/>
+                                <Grid ColumnDefinitions="*, *, *, *, *, *, *"
+                                      RowDefinitions="*">
+                                    <DataGrid Grid.ColumnSpan="7"
                                               Name="ShiftsDGrid"
                                               ItemsSource="{Binding ShiftsList}"
                                               AutoGenerateColumns="False"
@@ -87,6 +85,9 @@
                                                                         Width="auto"/>
                                                     <DataGridTextColumn Header="Конец" 
                                                                         Binding="{Binding ShiftEnds}"
+                                                                        Width="auto"/>
+                                                    <DataGridTextColumn Header="Сотрудники"
+                                                                        Binding="{Binding Users.Count}"
                                                                         Width="auto"/>
                                             </DataGrid.Columns>
                                     </DataGrid>
@@ -114,6 +115,7 @@
                                         Grid.Column="6"/>
                                 -->
                         </Grid>
+                        </StackPanel>
                 </TabItem>
                 <TabItem Header="Заказы">
                         <TextBlock Margin="5">Окно смен</TextBlock>

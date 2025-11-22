@@ -16,16 +16,46 @@
                             Margin="0 0 0 10"></TimePicker>
                 <TimePicker Name="ShiftEndTPicker"
                             Margin="0 0 0 10"></TimePicker>
-            <!--
-            <ListBox Name="UsersLBox"
-                     ItemsSource="Users">
-                <ListBoxItem>
+            
+            <TextBlock Text="Сотрудники смены" Margin="0 10 0 10"/>
+            <ListBox Name="SelectedUsersLBox"
+                     ItemsSource="{Binding SelectedUsers}"
+                     DisplayMemberBinding="{Binding Login}"
+                     SelectionChanged="SelectedUsersLBox_OnSelectionChanged">
+                <!--
+                <ListBox.ItemTemplate>
                     <DataTemplate>
-                        
+                        <Border BorderBrush="Blue" BorderThickness="1" 
+                                CornerRadius="4" Padding="4">
+                            <TextBlock Text="{Binding Login}"/>
+                        </Border>
                     </DataTemplate>
-                </ListBoxItem>
+                </ListBox.ItemTemplate>
+                -->
             </ListBox>
-            -->
+            
+            <TextBlock Text="Все сотрудники" Margin="0 10 0 10"/>
+            <ListBox Name="UnselectedUsersLBox"
+                     ItemsSource="{Binding UnselectedUsers}"
+                     DisplayMemberBinding="{Binding Login}"
+                     SelectionChanged="UnselectedUsersLBox_OnSelectionChanged"/>
+            
+            <Button Content="Сохранить"
+                    Width="200"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0 10 0 10"
+                    Name="SaveBtn"
+                    Click="SaveBtn_OnClick" />
+            
+            <Button Content="Отмена"
+                    Width="200"
+                    HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Margin="0 10 0 10"
+                    Name="CancelBtn"
+                    Click="CancelBtn_OnClick" />
+            
         </StackPanel>
         
 </Window>

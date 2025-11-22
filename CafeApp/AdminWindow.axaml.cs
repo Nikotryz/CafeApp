@@ -73,11 +73,16 @@ public partial class AdminWindow : Window
 
     private void ShiftsDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        var selectedShift = shiftsDGrid.SelectedItem as Shift;
+        if (selectedShift == null)
+            return;
+        
+        new ShiftEditWindow(selectedShift).Show();
     }
 
     private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        new ShiftEditWindow().Show();
+        new ShiftEditWindow().ShowDialog(this);
+        shiftsDGrid.ItemsSource = _db.Shifts.Include(x => x.Users).Include(x => x.Orders).ToList();
     }
 }

@@ -40,8 +40,6 @@ public partial class UserEditWindow : Window
         loginTBox.Text = editUser.Login;
         passwordTBox.Text = editUser.Password;
         roleCBox.SelectedItem = editUser.Role;
-
-        
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
