@@ -12,10 +12,11 @@ namespace CafeApp;
 
 public partial class UserEditWindow : Window
 {
-    private TextBox loginTBox;
-    private TextBox passwordTBox;
-    private ComboBox roleCBox;
-    private User editUser;
+    private readonly TextBox _loginTBox;
+    private readonly TextBox _passwordTBox;
+    private readonly ComboBox _roleCBox;
+    
+    private readonly User _editUser = new();
     
     public List<Role> Roles { get; set; }
     
@@ -24,22 +25,28 @@ public partial class UserEditWindow : Window
     public UserEditWindow()
     {
         InitializeComponent();
+        
+        _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
+        _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
+        _roleCBox = this.FindControl<ComboBox>("RoleCBox")!;
+        
+        _roleCBox.ItemsSource = _db.Roles.ToList();;
     }
 
     public UserEditWindow(User editUser)
     {
         InitializeComponent();
         
-        loginTBox = this.FindControl<TextBox>("LoginTBox");
-        passwordTBox = this.FindControl<TextBox>("PasswordTBox");
-        roleCBox = this.FindControl<ComboBox>("RoleCBox");
-        this.editUser = editUser;
+        _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
+        _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
+        _roleCBox = this.FindControl<ComboBox>("RoleCBox")!;
+        _editUser = editUser;
         
-        roleCBox.ItemsSource = _db.Roles.ToList();;
+        _roleCBox.ItemsSource = _db.Roles.ToList();;
 
-        loginTBox.Text = editUser.Login;
-        passwordTBox.Text = editUser.Password;
-        roleCBox.SelectedItem = editUser.Role;
+        _loginTBox.Text = editUser.Login;
+        _passwordTBox.Text = editUser.Password;
+        _roleCBox.SelectedItem = editUser.Role;
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -47,16 +54,24 @@ public partial class UserEditWindow : Window
         Close();
     }
 
-    private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (!string.IsNullOrWhiteSpace(loginTBox.Text) &&
-            !string.IsNullOrWhiteSpace(passwordTBox.Text))
+        if (!string.IsNullOrWhiteSpace(_loginTBox.Text) &&
+            !string.IsNullOrWhiteSpace(_passwordTBox.Text) &&
+            _roleCBox.SelectedItem is Role selectedRole)
         {
-            editUser.Login = loginTBox.Text;
-            editUser.Password = passwordTBox.Text;
-            editUser.Role = roleCBox.SelectedItem as Role;
-
-            _db.SaveChanges();
+            _editUser.Login = _loginTBox.Text;
+            _editUser.Password = _passwordTBox.Text;
+            _editUser.Role = selectedRole;
+            _editUser.Status = UserStatusesConstants.USER_WORKED;
+            
+            if (_editUser.Id != 0)
+                _db.Users.Update(_editUser);
+            else
+                await _db.Users.AddAsync(_editUser);
+        
+            await _db.SaveChangesAsync();
+            
             Close();
         }
     }

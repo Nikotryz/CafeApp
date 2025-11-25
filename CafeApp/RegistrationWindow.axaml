@@ -18,7 +18,7 @@
                          Watermark="Введите пароль"
                          PasswordChar="*"
                          Margin="0 0 0 10"/>
-                <Button Content="Зарегистрироваться"
+                <Button Content="Зарегистрировать"
                         HorizontalAlignment="Center"
                         Margin="0 0 0 10"
                         Name="RegBtn"

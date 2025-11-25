@@ -8,121 +8,125 @@
         Title="Окно администратора">
     
         <TabControl>
-                <TabItem Header="Сотрудники" >
-                        <Grid ColumnDefinitions="*, *, *, *, *, *, *"
-                              RowDefinitions="*, *, *, *, *">
-                                    <DataGrid Grid.Row="1"
-                                              Grid.ColumnSpan="7"
-                                              Grid.RowSpan="4"
-                                              Name="UsersDGrid"
-                                              ItemsSource="{Binding UsersList}"
-                                              AutoGenerateColumns="False"
-                                              CanUserReorderColumns="False"
-                                              CanUserResizeColumns="True"
-                                              ColumnWidth="*"
-                                              SelectionChanged="UsersDataGrid_OnSelectionChanged">
-                                            <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="Логин" 
-                                                                        Binding="{Binding Login}"
-                                                                        Width="auto"/>
-                                                    <DataGridTextColumn Header="Пароль" 
-                                                                        Binding="{Binding Password}"
-                                                                        Width="auto"/>
-                                                    <DataGridTextColumn Header="Роль" 
-                                                                        Binding="{Binding Role.Name}"
-                                                                        Width="auto"/>
-                                                    <DataGridTextColumn Header="Статус" 
-                                                                        Binding="{Binding Status}"
-                                                                        Width="auto"/>
-                                            </DataGrid.Columns>
-                                    </DataGrid>
-                                
-                                <TextBox Height="30"
-                                         Width="200"
-                                         Name="SearchTBox"
-                                         Grid.ColumnSpan="2"/>
-                                <Button Grid.Column="2"
-                                        Content="Найти"
-                                        Width="100"
-                                        Name="SearchBtn"
-                                        Click="SearchBtn_OnClick"/>
-                                <Button Grid.Column="5"
-                                        Content="Удалить"
-                                        Name="DeleteBtn"
-                                        Click="DeleteBtn_OnClick"/>
-                                <Button Grid.Column="4"
-                                        Content="Изменить"
-                                        Name="EditBtn"
-                                        IsEnabled="False"
-                                        Click="EditBtn_OnClick"/>
-                                <Button Content="Выйти"
-                                        Name="LogOutBtn"
-                                        Click="LogOutBtn_OnClick"
-                                        Grid.Column="6"/>
-                        </Grid>
+                
+                <!-- Вкладка 1: Сотрудники -->
+                <TabItem Header="Сотрудники">
+                        <StackPanel Orientation="Vertical"
+                                    Margin="25">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Spacing="10">
+                                        <!--
+                                        <TextBox Width="200"
+                                                 HorizontalAlignment="Left"
+                                                 Name="SearchTBox"/>
+                                        <Button Content="Найти"
+                                                HorizontalAlignment="Left"
+                                                Name="SearchBtn"
+                                                Click="SearchBtn_OnClick"/>
+                                        -->
+                                        <Button Content="Удалить"
+                                                Foreground="Red"
+                                                Name="UserDeleteBtn"
+                                                IsEnabled="False"
+                                                Click="UserDeleteBtn_OnClick"/>
+                                        <Button Content="Изменить"
+                                                Name="UserEditBtn"
+                                                IsEnabled="False"
+                                                Click="UserEditBtn_OnClick"/>
+                                        <Button Name="AddUserBtn"
+                                                Content="Добавить пользователя"
+                                                Click="AddUserBtn_OnClick"/>
+                                </StackPanel>
+                                <DataGrid Name="UsersDGrid"
+                                          ItemsSource="{Binding UsersList}"
+                                          AutoGenerateColumns="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="True"
+                                          ColumnWidth="*"
+                                          SelectionChanged="UsersDataGrid_OnSelectionChanged">
+                                        <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Логин" 
+                                                                    Binding="{Binding Login}"
+                                                                    Width="auto"/>
+                                                <DataGridTextColumn Header="Пароль" 
+                                                                    Binding="{Binding Password}"
+                                                                    Width="auto"/>
+                                                <DataGridTextColumn Header="Роль" 
+                                                                    Binding="{Binding Role.Name}"
+                                                                    Width="auto"/>
+                                                <DataGridTextColumn Header="Статус" 
+                                                                    Binding="{Binding Status}"
+                                                                    Width="auto"/>
+                                        </DataGrid.Columns>
+                                </DataGrid>
+                        </StackPanel>
                 </TabItem>
+                
+                <!-- Вкладка 2: Смены -->
                 <TabItem Header="Смены">
                         <StackPanel Orientation="Vertical"
                                     Margin="25"
                                     HorizontalAlignment="Stretch">
-                                <Button Name="AddShiftBtn"
-                                        Content="Добавить смену"
-                                        HorizontalAlignment="Right"
-                                        Click="AddShiftBtn_OnClick"/>
-                                <Grid ColumnDefinitions="*, *, *, *, *, *, *"
-                                      RowDefinitions="*">
-                                    <DataGrid Grid.ColumnSpan="7"
-                                              Name="ShiftsDGrid"
-                                              ItemsSource="{Binding ShiftsList}"
-                                              AutoGenerateColumns="False"
-                                              CanUserReorderColumns="False"
-                                              CanUserResizeColumns="True"
-                                              ColumnWidth="*"
-                                              SelectionChanged="ShiftsDataGrid_OnSelectionChanged">
-                                            <DataGrid.Columns>
-                                                    <DataGridTextColumn Header="Начало" 
-                                                                        Binding="{Binding ShiftStarted}"
-                                                                        Width="auto"/>
-                                                    <DataGridTextColumn Header="Конец" 
-                                                                        Binding="{Binding ShiftEnds}"
-                                                                        Width="auto"/>
-                                                    <DataGridTextColumn Header="Сотрудники"
-                                                                        Binding="{Binding Users.Count}"
-                                                                        Width="auto"/>
-                                            </DataGrid.Columns>
-                                    </DataGrid>
-                                <!--
-                                <TextBox Height="30"
-                                         Width="200"
-                                         Name="SearchTBox"
-                                         Grid.ColumnSpan="2"/>
-                                <Button Grid.Column="2"
-                                        Content="Найти"
-                                        Name="SearchBtn"
-                                        Click="SearchBtn_OnClick"/>
-                                <Button Grid.Column="5"
-                                        Content="Удалить"
-                                        Name="DeleteBtn"
-                                        Click="DeleteBtn_OnClick"/>
-                                <Button Grid.Column="4"
-                                        Content="Изменить"
-                                        Name="EditBtn"
-                                        IsEnabled="False"
-                                        Click="EditBtn_OnClick"/>
-                                <Button Content="Выйти"
-                                        Name="LogOutBtn"
-                                        Click="LogOutBtn_OnClick"
-                                        Grid.Column="6"/>
-                                -->
-                        </Grid>
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Spacing="10">
+                                        <Button Content="Удалить"
+                                                Foreground="Red"
+                                                Name="ShiftDeleteBtn"
+                                                IsEnabled="False"
+                                                HorizontalAlignment="Right"
+                                                Click="ShiftDeleteBtn_OnClick"/>
+                                        <Button Content="Изменить"
+                                                Name="ShiftEditBtn"
+                                                IsEnabled="False"
+                                                HorizontalAlignment="Right"
+                                                Click="ShiftEditBtn_OnClick"/>
+                                        <Button Name="AddShiftBtn"
+                                                Content="Добавить смену"
+                                                HorizontalAlignment="Right"
+                                                Click="AddShiftBtn_OnClick"/>
+                                </StackPanel>
+                                <DataGrid Name="ShiftsDGrid"
+                                          ItemsSource="{Binding ShiftsList}"
+                                          AutoGenerateColumns="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="True"
+                                          ColumnWidth="*"
+                                          SelectionChanged="ShiftsDataGrid_OnSelectionChanged">
+                                        <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Начало" 
+                                                                    Binding="{Binding ShiftStarted}"
+                                                                    Width="auto"/>
+                                                <DataGridTextColumn Header="Конец" 
+                                                                    Binding="{Binding ShiftEnds}"
+                                                                    Width="auto"/>
+                                                <DataGridTextColumn Header="Сотрудники"
+                                                                    Binding="{Binding Users.Count}"
+                                                                    Width="auto"/>
+                                        </DataGrid.Columns>
+                                </DataGrid>
                         </StackPanel>
                 </TabItem>
+                
+                <!-- Вкладка 3: Заказы -->
                 <TabItem Header="Заказы">
                         <TextBlock Margin="5">Окно смен</TextBlock>
                 </TabItem>
+                
+                <!-- Вкладка 4: Отчеты -->
                 <TabItem Header="Отчеты">
                         <TextBlock Margin="5">Окно отчетов</TextBlock>
                 </TabItem>
+                
+                <!-- Вкладка 5: Профиль -->
+                <TabItem Header="Профиль">
+                        <Button Content="Выйти"
+                                Foreground="Red"
+                                Name="LogOutBtn"
+                                Click="LogOutBtn_OnClick"/>
+                </TabItem>
+                
         </TabControl>
         
 </Window>
