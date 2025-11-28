@@ -13,6 +13,14 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
+    public string Name { get; set; } = null!;
+
+    public string LastName { get; set; } = null!;
+
+    public string? MiddleName { get; set; }
+
+    public DateTime Birthday { get; set; }
+
     public string Status { get; set; } = null!;
 
     public byte[]? UserPhoto { get; set; }
@@ -21,7 +29,7 @@ public partial class User
 
     public virtual Role Role { get; set; } = null!;
 
-    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
+    public virtual ICollection<WaiterTable> WaiterTables { get; set; } = new List<WaiterTable>();
 
-    public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
+    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }

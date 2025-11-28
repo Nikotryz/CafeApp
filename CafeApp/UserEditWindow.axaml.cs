@@ -12,9 +12,13 @@ namespace CafeApp;
 
 public partial class UserEditWindow : Window
 {
-    private readonly TextBox _loginTBox;
-    private readonly TextBox _passwordTBox;
-    private readonly ComboBox _roleCBox;
+    private TextBox _loginTBox;
+    private TextBox _passwordTBox;
+    private TextBox _nameTBox;
+    private TextBox _lastNameTBox;
+    private TextBox _middleNameTBox;
+    private DatePicker _birthdayDPicker;
+    private ComboBox _roleCBox;
     
     private readonly User _editUser = new();
     
@@ -26,27 +30,42 @@ public partial class UserEditWindow : Window
     {
         InitializeComponent();
         
-        _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
-        _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
-        _roleCBox = this.FindControl<ComboBox>("RoleCBox")!;
+        FindControls();
         
-        _roleCBox.ItemsSource = _db.Roles.ToList();;
+        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == RolesConstants.WAITER_ROLE);
+        
+        _roleCBox!.ItemsSource = _db.Roles.ToList();
+        _roleCBox.SelectedItem = defaultRole;
     }
 
     public UserEditWindow(User editUser)
     {
         InitializeComponent();
         
+        FindControls();
+        
+        _editUser = editUser;
+        
+        _roleCBox!.ItemsSource = _db.Roles.ToList();
+
+        _loginTBox!.Text = editUser.Login;
+        _passwordTBox!.Text = editUser.Password;
+        _roleCBox.SelectedItem = editUser.Role;
+        _nameTBox!.Text = editUser.Name;
+        _lastNameTBox!.Text = editUser.LastName;
+        _middleNameTBox!.Text = editUser.MiddleName;
+        _birthdayDPicker!.SelectedDate = editUser.Birthday.Date;
+    }
+
+    private void FindControls()
+    {
         _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
         _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
         _roleCBox = this.FindControl<ComboBox>("RoleCBox")!;
-        _editUser = editUser;
-        
-        _roleCBox.ItemsSource = _db.Roles.ToList();;
-
-        _loginTBox.Text = editUser.Login;
-        _passwordTBox.Text = editUser.Password;
-        _roleCBox.SelectedItem = editUser.Role;
+        _nameTBox = this.FindControl<TextBox>("NameTBox")!;
+        _lastNameTBox = this.FindControl<TextBox>("LastNameTBox")!;
+        _middleNameTBox = this.FindControl<TextBox>("MiddleNameTBox")!;
+        _birthdayDPicker = this.FindControl<DatePicker>("BirthdayDPicker")!;
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)

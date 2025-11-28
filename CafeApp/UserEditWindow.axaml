@@ -4,20 +4,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:CafeApp"
         x:DataType="vm:UserEditWindow"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Height="800" Width="1200"
+        MinHeight="400" MinWidth="800"
         x:Class="CafeApp.UserEditWindow"
         Title="UserEditWindow">
     
     <StackPanel Orientation="Vertical"
                 Margin="25"
                 VerticalAlignment="Center" >
+        
+        <!-- Основные поля -->
         <TextBox Name="LoginTBox"
                  Watermark="Введите логин"
                  Margin="0 0 0 10"/>
         <TextBox Name="PasswordTBox"
                  Watermark="Введите пароль"
-                 PasswordChar="*"
                  Margin="0 0 0 10"/>
+        <TextBox Name="NameTBox"
+                 Watermark="Введите имя"
+                 Margin="0 0 0 10"/>
+        <TextBox Name="LastNameTBox"
+                 Watermark="Введите фамилию"
+                 Margin="0 0 0 10"/>
+        <TextBox Name="MiddleNameTBox"
+                 Watermark="Введите отчество"
+                 Margin="0 0 0 10"/>
+        <DatePicker Name="BirthdayDPicker"
+                    Margin="0 0 0 10"/>
+        
+        <!-- Выбор роли -->
         <ComboBox Name="RoleCBox"
                   ItemsSource="{Binding Roles}"
                   Margin="0 0 0 30"
@@ -28,15 +43,8 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-            
-        <ListBox>
-            <BehaviorCollectionTemplate>
-                <BehaviorCollection>
-                    <PanelDragBehavior></PanelDragBehavior>
-                </BehaviorCollection>
-            </BehaviorCollectionTemplate>
-        </ListBox>
         
+        <!-- Выбор фото -->
         <Button Content="Выбрать фото пользователя"
                 HorizontalAlignment="Left"
                 Margin="0 0 0 10"
@@ -49,6 +57,7 @@
                 Name="ContractPhotoBtn"
                 Click="ContractPhotoBtn_OnClick"/>
         
+        <!-- Кнопки управления -->
         <Button Content="Сохранить"
                 HorizontalAlignment="Center"
                 Margin="0 0 0 10"
@@ -58,6 +67,7 @@
                 HorizontalAlignment="Center"
                 Name="BackBtn"
                 Click="BackBtn_OnClick"/>
+        
     </StackPanel>
     
 </Window>

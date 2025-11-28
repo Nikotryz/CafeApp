@@ -19,6 +19,8 @@ public partial class CafeDbContext : DbContext
     public virtual DbSet<Table> Tables { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    
+    public virtual DbSet<WaiterTable> WaiterTables { get; set; }
 
     // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -121,10 +123,20 @@ public partial class CafeDbContext : DbContext
             entity.ToTable("users");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Birthday).HasColumnName("birthday");
             entity.Property(e => e.ContractPhoto).HasColumnName("contract_photo");
+            entity.Property(e => e.LastName)
+                .HasMaxLength(50)
+                .HasColumnName("last_name");
             entity.Property(e => e.Login)
                 .HasMaxLength(50)
                 .HasColumnName("login");
+            entity.Property(e => e.MiddleName)
+                .HasMaxLength(50)
+                .HasColumnName("middle_name");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
                 .HasColumnName("password");
@@ -137,23 +149,29 @@ public partial class CafeDbContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("users_role_id_fkey");
+        });
 
-            entity.HasMany(d => d.Tables).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "WaiterTable",
-                    r => r.HasOne<Table>().WithMany()
-                        .HasForeignKey("TableId")
-                        .HasConstraintName("waiter_tables_table_id_fkey"),
-                    l => l.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("waiter_tables_user_id_fkey"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "TableId").HasName("waiter_tables_pkey");
-                        j.ToTable("waiter_tables");
-                        j.IndexerProperty<int>("UserId").HasColumnName("user_id");
-                        j.IndexerProperty<int>("TableId").HasColumnName("table_id");
-                    });
+        modelBuilder.Entity<WaiterTable>(entity =>
+        {
+            entity.HasKey(e => new { e.ShiftId, e.UserId, e.TableId }).HasName("waiter_tables_pkey");
+
+            entity.ToTable("waiter_tables");
+
+            entity.Property(e => e.ShiftId).HasColumnName("shift_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.TableId).HasColumnName("table_id");
+
+            entity.HasOne(d => d.Shift).WithMany(p => p.WaiterTables)
+                .HasForeignKey(d => d.ShiftId)
+                .HasConstraintName("waiter_tables_shift_id_fkey");
+
+            entity.HasOne(d => d.Table).WithMany(p => p.WaiterTables)
+                .HasForeignKey(d => d.TableId)
+                .HasConstraintName("waiter_tables_table_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.WaiterTables)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("waiter_tables_user_id_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);
