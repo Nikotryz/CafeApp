@@ -19,7 +19,7 @@ public partial class User
 
     public string? MiddleName { get; set; }
 
-    public DateTime Birthday { get; set; }
+    public DateOnly Birthday { get; set; }
 
     public string Status { get; set; } = null!;
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
@@ -54,7 +55,7 @@ public partial class UserEditWindow : Window
         _nameTBox!.Text = editUser.Name;
         _lastNameTBox!.Text = editUser.LastName;
         _middleNameTBox!.Text = editUser.MiddleName;
-        _birthdayDPicker!.SelectedDate = editUser.Birthday.Date;
+        _birthdayDPicker!.SelectedDate = editUser.Birthday.ToDateTime(new TimeOnly(0, 0));
     }
 
     private void FindControls()
@@ -73,23 +74,31 @@ public partial class UserEditWindow : Window
         Close();
     }
 
-    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(_loginTBox.Text) &&
             !string.IsNullOrWhiteSpace(_passwordTBox.Text) &&
+            !string.IsNullOrWhiteSpace(_nameTBox.Text) &&
+            !string.IsNullOrWhiteSpace(_lastNameTBox.Text) &&
+            !string.IsNullOrWhiteSpace(_middleNameTBox.Text) &&
+            _birthdayDPicker.SelectedDate != null &&
             _roleCBox.SelectedItem is Role selectedRole)
         {
             _editUser.Login = _loginTBox.Text;
             _editUser.Password = _passwordTBox.Text;
             _editUser.Role = selectedRole;
+            _editUser.Name = _nameTBox.Text;
+            _editUser.LastName = _lastNameTBox.Text;
+            _editUser.MiddleName = _middleNameTBox.Text;
+            _editUser.Birthday = DateOnly.FromDateTime(_birthdayDPicker.SelectedDate.Value.Date);
             _editUser.Status = UserStatusesConstants.USER_WORKED;
             
             if (_editUser.Id != 0)
                 _db.Users.Update(_editUser);
             else
-                await _db.Users.AddAsync(_editUser);
+                _db.Users.Add(_editUser);
         
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             
             Close();
         }

@@ -11,8 +11,7 @@
                 
                 <!-- Вкладка 1: Сотрудники -->
                 <TabItem Header="Сотрудники">
-                        <StackPanel Orientation="Vertical"
-                                    Margin="25">
+                        <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             Spacing="10">
