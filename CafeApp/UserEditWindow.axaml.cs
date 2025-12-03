@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CafeApp.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,9 @@ public partial class UserEditWindow : Window
     private TextBox _middleNameTBox;
     private DatePicker _birthdayDPicker;
     private ComboBox _roleCBox;
+
+    private Image _employeeImageBox;
+    private Image _contractImageBox;
     
     private readonly User _editUser = new();
     
@@ -56,6 +61,8 @@ public partial class UserEditWindow : Window
         _lastNameTBox!.Text = editUser.LastName;
         _middleNameTBox!.Text = editUser.MiddleName;
         _birthdayDPicker!.SelectedDate = editUser.Birthday.ToDateTime(new TimeOnly(0, 0));
+        _employeeImageBox!.Source = editUser.UserPhoto?.ToBitmap();
+        _contractImageBox!.Source = editUser.ContractPhoto?.ToBitmap();
     }
 
     private void FindControls()
@@ -67,6 +74,8 @@ public partial class UserEditWindow : Window
         _lastNameTBox = this.FindControl<TextBox>("LastNameTBox")!;
         _middleNameTBox = this.FindControl<TextBox>("MiddleNameTBox")!;
         _birthdayDPicker = this.FindControl<DatePicker>("BirthdayDPicker")!;
+        _employeeImageBox = this.FindControl<Image>("EmployeeImageBox")!;
+        _contractImageBox = this.FindControl<Image>("ContractImageBox")!;
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -106,13 +115,25 @@ public partial class UserEditWindow : Window
 
     private async void UserPhotoBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var topLevel = TopLevel.GetTopLevel(this);
+        var topLevel = GetTopLevel(this);
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Открыть файл", AllowMultiple = false, FileTypeFilter = [FilePickerFileTypes.ImageAll] });
+        
+        if (!files.Any())
+            return;
+        
+        _editUser.UserPhoto = await files.First().ReadAllBytesAsync();
+        _employeeImageBox.Source = _editUser.UserPhoto.ToBitmap();
     }
 
     private async void ContractPhotoBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var topLevel = TopLevel.GetTopLevel(this);
+        var topLevel = GetTopLevel(this);
         var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Открыть файл", AllowMultiple = false, FileTypeFilter = [FilePickerFileTypes.ImageAll] });
+        
+        if (!files.Any())
+            return;
+        
+        _editUser.ContractPhoto = await files.First().ReadAllBytesAsync();
+        _contractImageBox.Source = _editUser.ContractPhoto.ToBitmap();
     }
 }
