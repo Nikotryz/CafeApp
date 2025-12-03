@@ -120,10 +120,20 @@
                 
                 <!-- Вкладка 5: Профиль -->
                 <TabItem Header="Профиль">
-                        <Button Content="Выйти"
-                                Foreground="Red"
-                                Name="LogOutBtn"
-                                Click="LogOutBtn_OnClick"/>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Top"
+                                    Margin="10"
+                                    Spacing="10">
+                                <TextBlock Text="Роль: Администратор"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"/>
+                                <Button Content="Выйти"
+                                        Foreground="Red"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Name="LogOutBtn"
+                                        Click="LogOutBtn_OnClick"/>
+                        </StackPanel>
                 </TabItem>
                 
         </TabControl>

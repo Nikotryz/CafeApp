@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CafeApp.CookWindows"
+        x:DataType="vm:CookWindow"
+        x:Class="CafeApp.CookWindows.CookWindow"
+        Height="800" Width="1200"
+        MinHeight="400" MinWidth="800"
+        Title="Окно повара">
+    
+    <TabControl>
+        
+        <!-- Вкладка 1: Заказы -->
+        <TabItem Header="Принятые заказы">
+            
+        </TabItem>
+        
+        <!-- Вкладка 2: Профиль -->
+        <TabItem Header="Профиль">
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Top"
+                        Margin="10"
+                        Spacing="10">
+                <TextBlock Text="Роль: Повар"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"/>
+                <Button Content="Выйти"
+                        Foreground="Red"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Name="LogOutBtn"
+                        Click="LogOutBtn_OnClick"/>
+            </StackPanel>
+        </TabItem>
+        
+    </TabControl>
+    
+</Window>

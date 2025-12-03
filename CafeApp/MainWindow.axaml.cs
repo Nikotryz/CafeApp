@@ -1,7 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Linq;
+using CafeApp.CookWindows;
 using CafeApp.Models;
+using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,9 +11,9 @@ namespace CafeApp;
 
 public partial class MainWindow : Window
 {
-    private TextBox loginTBox;
-    private TextBox passwordTBox;
-    private TextBlock messageTBlock;
+    private readonly TextBox _loginTBox;
+    private readonly TextBox _passwordTBox;
+    private readonly TextBlock _messageTBlock;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -19,50 +21,43 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         
-        loginTBox = this.FindControl<TextBox>("LoginTBox");
-        passwordTBox = this.FindControl<TextBox>("PasswordTBox");
-        messageTBlock = this.FindControl<TextBlock>("MessageTBlock");
+        _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
+        _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
+        _messageTBlock = this.FindControl<TextBlock>("MessageTBlock")!;
     }
 
     private void AuthBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(loginTBox.Text) || string.IsNullOrWhiteSpace(passwordTBox.Text))
+        if (string.IsNullOrWhiteSpace(_loginTBox.Text) || string.IsNullOrWhiteSpace(_passwordTBox.Text))
         {
-            messageTBlock.Text = "Поля логина или пароля пустые";
-            messageTBlock.IsVisible = true;
+            _messageTBlock.Text = "Поля логина или пароля пустые";
+            _messageTBlock.IsVisible = true;
             return;
         }
         
-        var userAuth = _db.Users.Include(x => x.Role).FirstOrDefault(u => u.Login == loginTBox.Text && u.Password == passwordTBox.Text);
+        var userAuth = _db.Users.Include(x => x.Role).FirstOrDefault(u => u.Login == _loginTBox.Text && u.Password == _passwordTBox.Text);
         var userRole = userAuth?.Role;
 
         if (userAuth == null)
         {
-            messageTBlock.Text = "Введенные логин или пароль неверны";
-            messageTBlock.IsVisible = true;
+            _messageTBlock.Text = "Введенные логин или пароль неверны";
+            _messageTBlock.IsVisible = true;
             return;
         }
 
-        if (userRole?.Name == RolesConstants.ADMIN_ROLE)
+        switch (userRole?.Name)
         {
-            new AdminWindow().Show();
-            Close();
+            case RolesConstants.ADMIN_ROLE:
+                new AdminWindow().Show();
+                break;
+            case RolesConstants.COOK_ROLE:
+                new CookWindow().Show();
+                break;
+            case RolesConstants.WAITER_ROLE:
+                new WaiterWindow().Show();
+                break;
         }
-        else if (userRole?.Name == RolesConstants.WAITER_ROLE)
-        {
-            new AdminWindow().Show();
-            Close();
-        }
-        else if (userRole?.Name == RolesConstants.COOK_ROLE)
-        {
-            new AdminWindow().Show();
-            Close();
-        }
-    }
-
-    private void RegBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new RegistrationWindow().Show();
+        
         Close();
     }
 }
