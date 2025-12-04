@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -22,6 +23,7 @@ public partial class UserEditWindow : Window
     private TextBox _middleNameTBox;
     private DatePicker _birthdayDPicker;
     private ComboBox _roleCBox;
+    private ComboBox _statusCBox;
 
     private Image _employeeImageBox;
     private Image _contractImageBox;
@@ -29,6 +31,7 @@ public partial class UserEditWindow : Window
     private readonly User _editUser = new();
     
     public List<Role> Roles { get; set; }
+    public List<string> Statuses { get; set; }
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -42,6 +45,9 @@ public partial class UserEditWindow : Window
         
         _roleCBox!.ItemsSource = _db.Roles.ToList();
         _roleCBox.SelectedItem = defaultRole;
+        
+        _statusCBox!.ItemsSource = new string[] {UserStatusesConstants.USER_WORKED, UserStatusesConstants.USER_FIRED};
+        _statusCBox.SelectedItem = UserStatusesConstants.USER_WORKED;
     }
 
     public UserEditWindow(User editUser)
@@ -53,10 +59,12 @@ public partial class UserEditWindow : Window
         _editUser = editUser;
         
         _roleCBox!.ItemsSource = _db.Roles.ToList();
+        _statusCBox!.ItemsSource = new string[] { UserStatusesConstants.USER_WORKED, UserStatusesConstants.USER_FIRED };
 
         _loginTBox!.Text = editUser.Login;
         _passwordTBox!.Text = editUser.Password;
         _roleCBox.SelectedItem = editUser.Role;
+        _statusCBox!.SelectedItem = editUser.Status;
         _nameTBox!.Text = editUser.Name;
         _lastNameTBox!.Text = editUser.LastName;
         _middleNameTBox!.Text = editUser.MiddleName;
@@ -76,6 +84,7 @@ public partial class UserEditWindow : Window
         _birthdayDPicker = this.FindControl<DatePicker>("BirthdayDPicker")!;
         _employeeImageBox = this.FindControl<Image>("EmployeeImageBox")!;
         _contractImageBox = this.FindControl<Image>("ContractImageBox")!;
+        _statusCBox = this.FindControl<ComboBox>("StatusCBox")!;
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -91,7 +100,8 @@ public partial class UserEditWindow : Window
             !string.IsNullOrWhiteSpace(_lastNameTBox.Text) &&
             !string.IsNullOrWhiteSpace(_middleNameTBox.Text) &&
             _birthdayDPicker.SelectedDate != null &&
-            _roleCBox.SelectedItem is Role selectedRole)
+            _roleCBox.SelectedItem is Role selectedRole &&
+            _statusCBox.SelectedItem is string status)
         {
             _editUser.Login = _loginTBox.Text;
             _editUser.Password = _passwordTBox.Text;
@@ -100,7 +110,7 @@ public partial class UserEditWindow : Window
             _editUser.LastName = _lastNameTBox.Text;
             _editUser.MiddleName = _middleNameTBox.Text;
             _editUser.Birthday = DateOnly.FromDateTime(_birthdayDPicker.SelectedDate.Value.Date);
-            _editUser.Status = UserStatusesConstants.USER_WORKED;
+            _editUser.Status = status;
             
             if (_editUser.Id != 0)
                 _db.Users.Update(_editUser);
@@ -115,25 +125,31 @@ public partial class UserEditWindow : Window
 
     private async void UserPhotoBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var topLevel = GetTopLevel(this);
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Открыть файл", AllowMultiple = false, FileTypeFilter = [FilePickerFileTypes.ImageAll] });
-        
-        if (!files.Any())
+        var file = await GetImageAsync();
+
+        if (file == null)
             return;
         
-        _editUser.UserPhoto = await files.First().ReadAllBytesAsync();
+        _editUser.UserPhoto = await file.ReadAllBytesAsync();
         _employeeImageBox.Source = _editUser.UserPhoto.ToBitmap();
     }
 
     private async void ContractPhotoBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var topLevel = GetTopLevel(this);
-        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Открыть файл", AllowMultiple = false, FileTypeFilter = [FilePickerFileTypes.ImageAll] });
-        
-        if (!files.Any())
+        var file = await GetImageAsync();
+
+        if (file == null)
             return;
         
-        _editUser.ContractPhoto = await files.First().ReadAllBytesAsync();
+        _editUser.ContractPhoto = await file.ReadAllBytesAsync();
         _contractImageBox.Source = _editUser.ContractPhoto.ToBitmap();
+    }
+
+    private async Task<IStorageFile?> GetImageAsync()
+    {
+        var topLevel = GetTopLevel(this);
+        var files = await topLevel!.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Выберите фото", AllowMultiple = false, FileTypeFilter = [FilePickerFileTypes.ImageAll] });
+
+        return files.FirstOrDefault();
     }
 }
