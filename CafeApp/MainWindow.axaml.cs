@@ -47,13 +47,13 @@ public partial class MainWindow : Window
 
         switch (userRole?.Name)
         {
-            case RolesConstants.ADMIN_ROLE:
+            case Roles.ADMIN_ROLE:
                 new AdminWindow().Show();
                 break;
-            case RolesConstants.COOK_ROLE:
+            case Roles.COOK_ROLE:
                 new CookWindow().Show();
                 break;
-            case RolesConstants.WAITER_ROLE:
+            case Roles.WAITER_ROLE:
                 new WaiterWindow().Show();
                 break;
         }

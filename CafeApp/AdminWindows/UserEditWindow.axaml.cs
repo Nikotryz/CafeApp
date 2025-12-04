@@ -41,13 +41,13 @@ public partial class UserEditWindow : Window
         
         FindControls();
         
-        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == RolesConstants.WAITER_ROLE);
+        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == CafeApp.Roles.WAITER_ROLE);
         
         _roleCBox!.ItemsSource = _db.Roles.ToList();
         _roleCBox.SelectedItem = defaultRole;
         
-        _statusCBox!.ItemsSource = new string[] {UserStatusesConstants.USER_WORKED, UserStatusesConstants.USER_FIRED};
-        _statusCBox.SelectedItem = UserStatusesConstants.USER_WORKED;
+        _statusCBox!.ItemsSource = new string[] {UserStatuses.USER_WORKED, UserStatuses.USER_FIRED};
+        _statusCBox.SelectedItem = UserStatuses.USER_WORKED;
     }
 
     public UserEditWindow(User editUser)
@@ -59,7 +59,7 @@ public partial class UserEditWindow : Window
         _editUser = editUser;
         
         _roleCBox!.ItemsSource = _db.Roles.ToList();
-        _statusCBox!.ItemsSource = new string[] { UserStatusesConstants.USER_WORKED, UserStatusesConstants.USER_FIRED };
+        _statusCBox!.ItemsSource = new string[] { UserStatuses.USER_WORKED, UserStatuses.USER_FIRED };
 
         _loginTBox!.Text = editUser.Login;
         _passwordTBox!.Text = editUser.Password;

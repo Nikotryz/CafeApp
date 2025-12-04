@@ -59,7 +59,6 @@
                 <!-- Вкладка 2: Смены -->
                 <TabItem Header="Смены">
                         <StackPanel Orientation="Vertical"
-                                    Margin="25"
                                     HorizontalAlignment="Stretch">
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right"

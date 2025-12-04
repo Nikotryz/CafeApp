@@ -36,7 +36,7 @@ public partial class AddWaiterTableWindow : Window
     private void LoadData()
     {
         _waiterComboBox.ItemsSource = _db.Users
-            .Where(x => x.Role.Name == RolesConstants.WAITER_ROLE && x.Status == UserStatusesConstants.USER_WORKED)
+            .Where(x => x.Role.Name == Roles.WAITER_ROLE && x.Status == UserStatuses.USER_WORKED)
             .ToList();
 
         _tableComboBox.ItemsSource = _db.Tables.ToList();

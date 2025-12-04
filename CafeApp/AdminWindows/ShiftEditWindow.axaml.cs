@@ -80,7 +80,7 @@ public partial class ShiftEditWindow : Window
         var allUsers = _db.Users
             .Include(x => x.Role)
             .Include(x => x.Shifts)
-            .Where(x => x.Status == UserStatusesConstants.USER_WORKED)
+            .Where(x => x.Status == UserStatuses.USER_WORKED)
             .OrderBy(x => x.Role)
             .ToList();
         

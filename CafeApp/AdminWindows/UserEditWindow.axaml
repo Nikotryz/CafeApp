@@ -5,7 +5,7 @@
         Height="800" Width="1200"
         MinHeight="600" MinWidth="1100"
         x:Class="CafeApp.UserEditWindow"
-        Title="UserEditWindow">
+        Title="Окно изменения/добавления пользователя">
     
     <StackPanel Orientation="Vertical"
                 Margin="25"
@@ -40,14 +40,9 @@
                 <!-- Выбор роли -->
                 <ComboBox Name="RoleCBox"
                           ItemsSource="{Binding Roles}"
+                          DisplayMemberBinding="{Binding Name}"
                           Margin="0 0 0 10"
-                          Width="300">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                          Width="300"/>
                 
                 <!-- Выбор статуса -->
                 <ComboBox Name="StatusCBox"

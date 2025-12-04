@@ -1,6 +1,6 @@
 namespace CafeApp;
 
-public class UserStatusesConstants
+public class UserStatuses
 {
     public const string USER_WORKED = "Работает";
     public const string USER_FIRED = "Уволен";
