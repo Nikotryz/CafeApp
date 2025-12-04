@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using CafeApp.AdminWindows;
 using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,25 +18,25 @@ public partial class ShiftEditWindow : Window
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
 
-    private readonly DatePicker _shiftDPicker;
-    private readonly TimePicker _shiftStartTPicker;
-    private readonly TimePicker _shiftEndTPicker;
-    private readonly DataGrid _shiftUsersDataGrid;
+    private DatePicker _shiftDPicker;
+    private TimePicker _shiftStartTPicker;
+    private TimePicker _shiftEndTPicker;
     
-    private readonly TextBlock _errorTextBlock;
+    private DataGrid _shiftUsersDataGrid;
+    private DataGrid _waiterTablesDataGrid;
+    
+    private Button _deleteWaiterTableBtn;
+    
+    private TextBlock _errorTextBlock;
 
     public List<SelectionUser> Users { get; set; } = [];
+    public List<WaiterTable> WaiterTables { get; set; } = [];
     
     public ShiftEditWindow()
     {
         InitializeComponent();
         
-        _shiftDPicker = this.FindControl<DatePicker>("ShiftDPicker")!;
-        _shiftStartTPicker = this.FindControl<TimePicker>("ShiftStartTPicker")!;
-        _shiftEndTPicker = this.FindControl<TimePicker>("ShiftEndTPicker")!;
-        _shiftUsersDataGrid = this.FindControl<DataGrid>("ShiftUsersDataGrid")!;
-        
-        _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
+        FindControls();
         
         LoadUsers();
     }
@@ -42,13 +44,8 @@ public partial class ShiftEditWindow : Window
     public ShiftEditWindow(Shift shift)
     {
         InitializeComponent();
-        
-        _shiftDPicker = this.FindControl<DatePicker>("ShiftDPicker")!;
-        _shiftStartTPicker = this.FindControl<TimePicker>("ShiftStartTPicker")!;
-        _shiftEndTPicker = this.FindControl<TimePicker>("ShiftEndTPicker")!;
-        _shiftUsersDataGrid = this.FindControl<DataGrid>("ShiftUsersDataGrid")!;
-        
-        _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
+
+        FindControls();
         
         _editShift = shift;
 
@@ -56,11 +53,26 @@ public partial class ShiftEditWindow : Window
         var startTime = shift.ShiftStarted.TimeOfDay;
         var endTime = shift.ShiftEnds.TimeOfDay;
         
-        _shiftDPicker.SelectedDate = date;
-        _shiftStartTPicker.SelectedTime = startTime;
-        _shiftEndTPicker.SelectedTime = endTime;
+        _shiftDPicker!.SelectedDate = date;
+        _shiftStartTPicker!.SelectedTime = startTime;
+        _shiftEndTPicker!.SelectedTime = endTime;
         
         LoadUsers();
+        LoadWaiterTables();
+    }
+
+    private void FindControls()
+    {
+        _shiftDPicker = this.FindControl<DatePicker>("ShiftDPicker")!;
+        _shiftStartTPicker = this.FindControl<TimePicker>("ShiftStartTPicker")!;
+        _shiftEndTPicker = this.FindControl<TimePicker>("ShiftEndTPicker")!;
+        
+        _shiftUsersDataGrid = this.FindControl<DataGrid>("ShiftUsersDataGrid")!;
+        _waiterTablesDataGrid = this.FindControl<DataGrid>("WaiterTablesDataGrid")!;
+        
+        _deleteWaiterTableBtn = this.FindControl<Button>("DeleteWaiterTableBtn")!;
+        
+        _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
     }
 
     private void LoadUsers()
@@ -69,15 +81,21 @@ public partial class ShiftEditWindow : Window
             .Include(x => x.Role)
             .Include(x => x.Shifts)
             .Where(x => x.Status == UserStatusesConstants.USER_WORKED)
+            .OrderBy(x => x.Role)
             .ToList();
         
         var selectionUsers = new List<SelectionUser>();
 
         foreach (var user in allUsers)
             selectionUsers.Add(new SelectionUser { User = user, IsSelected = user.Shifts.Contains(_editShift) });
-        
+
         Users = selectionUsers;
-        _shiftUsersDataGrid.ItemsSource = Users;
+        _shiftUsersDataGrid.ItemsSource = selectionUsers;
+    }
+
+    private void LoadWaiterTables()
+    {
+        _waiterTablesDataGrid.ItemsSource = _db.WaiterTables.Where(x => x.Shift == _editShift).ToList();
     }
 
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -130,7 +148,6 @@ public partial class ShiftEditWindow : Window
     private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
         var selectedUser = _shiftUsersDataGrid.SelectedItem as SelectionUser;
-        
         if (selectedUser == null)
             return;
         
@@ -143,5 +160,32 @@ public partial class ShiftEditWindow : Window
         Users.Add(user);
         
         _shiftUsersDataGrid.ItemsSource = Users;
+    }
+
+    private void WaiterTablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        _deleteWaiterTableBtn.IsEnabled = _waiterTablesDataGrid.SelectedItem != null;
+    }
+
+    private async void DeleteWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedWaiterTable = _waiterTablesDataGrid.SelectedItem as WaiterTable;
+        if (selectedWaiterTable == null)
+            return;
+        
+        _db.WaiterTables.Remove(selectedWaiterTable);
+        await _db.SaveChangesAsync();
+        
+        LoadWaiterTables();
+    }
+
+    private void AddWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        new AddWaiterTableWindow(_editShift).ShowDialog(this);
+    }
+
+    private void RefreshBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        LoadWaiterTables();
     }
 }

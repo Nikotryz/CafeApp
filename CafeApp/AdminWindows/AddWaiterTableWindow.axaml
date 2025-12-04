@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CafeApp.AdminWindows"
+        x:Class="CafeApp.AdminWindows.AddWaiterTableWindow"
+        x:DataType="vm:AddWaiterTableWindow"
+        SizeToContent="WidthAndHeight"
+        Title="Добавить обслуживаемый столик">
+    
+        <StackPanel Orientation="Vertical"
+                    Margin="20"
+                    Spacing="10">
+                
+                <!-- Официант -->
+                <TextBlock Text="Выберите официанта"/>
+                <ComboBox Name="WaiterComboBox"
+                          ItemsSource="{Binding Waiters}"
+                          DisplayMemberBinding="{Binding Login}"
+                          Margin="0 0 0 10"
+                          Width="300"/>
+                
+                <!-- Столик -->
+                <TextBlock Text="Выберите столик"/>
+                <ComboBox Name="TableComboBox"
+                          ItemsSource="{Binding Tables}"
+                          DisplayMemberBinding="{Binding Number}"
+                          Margin="0 0 0 10"
+                          Width="300"/>
+                
+                <!-- Кнопки управления -->
+                <Button Name="SaveBtn"
+                        Content="Добавить"
+                        HorizontalAlignment="Center"
+                        Click="SaveBtn_OnClick"/>
+                <Button Name="CancelBtn"
+                        Content="Отмена"
+                        HorizontalAlignment="Center"
+                        Click="CancelBtn_OnClick"/>
+                
+        </StackPanel>
+        
+</Window>

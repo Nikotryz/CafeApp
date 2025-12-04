@@ -15,15 +15,9 @@
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             Spacing="10">
-                                        <!--
-                                        <TextBox Width="200"
-                                                 HorizontalAlignment="Left"
-                                                 Name="SearchTBox"/>
-                                        <Button Content="Найти"
-                                                HorizontalAlignment="Left"
-                                                Name="SearchBtn"
-                                                Click="SearchBtn_OnClick"/>
-                                        -->
+                                        <Button Name="RefreshUsersBtn"
+                                                Content="Обновить"
+                                                Click="RefreshUsersBtn_OnClick"/>
                                         <Button Content="Удалить"
                                                 Foreground="Red"
                                                 Name="UserDeleteBtn"
@@ -70,6 +64,9 @@
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             Spacing="10">
+                                        <Button Name="RefreshShiftsBtn"
+                                                Content="Обновить"
+                                                Click="RefreshShiftsBtn_OnClick"/>
                                         <Button Content="Удалить"
                                                 Foreground="Red"
                                                 Name="ShiftDeleteBtn"
@@ -117,6 +114,9 @@
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             Spacing="10">
+                                        <Button Name="RefreshTablesBtn"
+                                                Content="Обновить"
+                                                Click="RefreshTablesBtn_OnClick"/>
                                         <Button Content="Удалить"
                                                 Foreground="Red"
                                                 Name="DeleteTableBtn"

@@ -4,7 +4,11 @@
     <option name="projectPerEditor">
       <map>
         <entry key="CafeApp/AdminWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/AdminWindows/AddTableWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/AdminWindows/AddWaiterTableWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/AdminWindows/AdminWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/AdminWindows/ShiftEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/AdminWindows/UserEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/App.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/CookWindows/CookWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/EditShiftWindow.axaml" value="CafeApp/CafeApp.csproj" />

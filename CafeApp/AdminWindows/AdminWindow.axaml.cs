@@ -57,23 +57,23 @@ public partial class AdminWindow : Window
 
     private void LoadUsers()
     {
-        _usersDGrid.ItemsSource = _db.Users.Include(x => x.Role).ToList();
+        _usersDGrid.ItemsSource = _db.Users
+            .Include(x => x.Role)
+            .ToList();
     }
 
     private void LoadShifts()
     {
-        _shiftsDGrid.ItemsSource = _db.Shifts.Include(x => x.Users).Include(x => x.Orders).ToList();
+        _shiftsDGrid.ItemsSource = _db.Shifts
+            .Include(x => x.Users)
+            .Include(x => x.Orders)
+            .Include(x => x.WaiterTables)
+            .ToList();
     } 
     
     private void LoadTables()
     {
         _tablesDGrid.ItemsSource = _db.Tables.ToList();
-    } 
-
-    // TODO
-    private void SearchBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
     }
 
     private void LogOutBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -112,7 +112,6 @@ public partial class AdminWindow : Window
     private void AddUserBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         new UserEditWindow().ShowDialog(this);
-        LoadUsers();
     }
 
     private void ShiftsDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -121,9 +120,15 @@ public partial class AdminWindow : Window
         _shiftDeleteBtn.IsEnabled = _shiftsDGrid.SelectedItem != null;
     }
 
-    private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e)
+
+    private async void ShiftDeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        new ShiftEditWindow().ShowDialog(this);
+        var selectedShift = _shiftsDGrid.SelectedItem as Shift;
+        if (selectedShift == null)
+            return;
+        
+        _db.Shifts.Remove(selectedShift);
+        await _db.SaveChangesAsync();
         LoadShifts();
     }
 
@@ -136,16 +141,9 @@ public partial class AdminWindow : Window
         await new ShiftEditWindow(selectedShift).ShowDialog(this);
         LoadShifts();
     }
-
-    private async void ShiftDeleteBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var selectedShift = _shiftsDGrid.SelectedItem as Shift;
-        if (selectedShift == null)
-            return;
-        
-        _db.Shifts.Remove(selectedShift);
-        await _db.SaveChangesAsync();
-        LoadShifts();
+        new ShiftEditWindow().ShowDialog(this);
     }
 
     private void TablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -167,6 +165,20 @@ public partial class AdminWindow : Window
     private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         new AddTableWindow().ShowDialog(this);
+    }
+    
+    private void RefreshUsersBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        LoadUsers();
+    }
+
+    private void RefreshShiftsBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        LoadShifts();
+    }
+    
+    private void RefreshTablesBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
         LoadTables();
     }
 }
