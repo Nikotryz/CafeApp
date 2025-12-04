@@ -94,11 +94,14 @@
                                           ColumnWidth="*"
                                           SelectionChanged="ShiftsDataGrid_OnSelectionChanged">
                                         <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Дата" 
+                                                                    Binding="{Binding ShiftStarted.Date, StringFormat=dd.MM.yyyy}"
+                                                                    Width="auto"/>
                                                 <DataGridTextColumn Header="Начало" 
-                                                                    Binding="{Binding ShiftStarted}"
+                                                                    Binding="{Binding ShiftStarted, StringFormat=HH:mm}"
                                                                     Width="auto"/>
                                                 <DataGridTextColumn Header="Конец" 
-                                                                    Binding="{Binding ShiftEnds}"
+                                                                    Binding="{Binding ShiftEnds, StringFormat=HH:mm}"
                                                                     Width="auto"/>
                                                 <DataGridTextColumn Header="Сотрудники"
                                                                     Binding="{Binding Users.Count}"
@@ -108,17 +111,49 @@
                         </StackPanel>
                 </TabItem>
                 
-                <!-- Вкладка 3: Заказы -->
+                <!-- Вкладка 3: Столики -->
+                <TabItem Header="Столики">
+                         <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Spacing="10">
+                                        <Button Content="Удалить"
+                                                Foreground="Red"
+                                                Name="DeleteTableBtn"
+                                                IsEnabled="False"
+                                                Click="DeleteTableBtn_OnClick"/>
+                                        <Button Name="AddTableBtn"
+                                                Content="Добавить столик"
+                                                Click="AddTableBtn_OnClick"/>
+                                </StackPanel>
+                                <DataGrid Name="TablesDGrid"
+                                          ItemsSource="{Binding TablesList}"
+                                          AutoGenerateColumns="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="True"
+                                          ColumnWidth="auto"
+                                          SelectionChanged="TablesDataGrid_OnSelectionChanged">
+                                        <DataGrid.Columns>
+                                                <DataGridTextColumn Header="ID" 
+                                                                    Binding="{Binding Id}"/>
+                                                <DataGridTextColumn Header="Номер столика" 
+                                                                    Binding="{Binding Number}"/>
+                                        </DataGrid.Columns>
+                                </DataGrid>
+                        </StackPanel>
+                </TabItem>
+                
+                <!-- Вкладка 4: Заказы -->
                 <TabItem Header="Заказы">
                         <TextBlock Margin="5">Окно смен</TextBlock>
                 </TabItem>
                 
-                <!-- Вкладка 4: Отчеты -->
+                <!-- Вкладка 5: Отчеты -->
                 <TabItem Header="Отчеты">
                         <TextBlock Margin="5">Окно отчетов</TextBlock>
                 </TabItem>
                 
-                <!-- Вкладка 5: Профиль -->
+                <!-- Вкладка 6: Профиль -->
                 <TabItem Header="Профиль">
                         <StackPanel Orientation="Horizontal"
                                     VerticalAlignment="Top"

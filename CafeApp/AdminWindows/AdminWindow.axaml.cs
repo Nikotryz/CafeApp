@@ -6,8 +6,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using CafeApp.AdminWindows;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeApp;
@@ -16,9 +18,11 @@ public partial class AdminWindow : Window
 {
     public List<User> UsersList { get; set; }
     public List<Shift> ShiftsList { get; set; }
+    public List<Table> TablesList { get; set; }
     
     private readonly DataGrid _usersDGrid;
     private readonly DataGrid _shiftsDGrid;
+    private readonly DataGrid _tablesDGrid;
 
     private readonly TextBox _searchTBox;
     
@@ -26,6 +30,7 @@ public partial class AdminWindow : Window
     private readonly Button _shiftEditBtn;
     private readonly Button _userDeleteBtn;
     private readonly Button _shiftDeleteBtn;
+    private readonly Button _deleteTableBtn;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -37,14 +42,17 @@ public partial class AdminWindow : Window
         
         _usersDGrid = this.FindControl<DataGrid>("UsersDGrid")!;
         _shiftsDGrid = this.FindControl<DataGrid>("ShiftsDGrid")!;
+        _tablesDGrid = this.FindControl<DataGrid>("TablesDGrid")!;
         
         _userEditBtn = this.FindControl<Button>("UserEditBtn")!;
         _shiftEditBtn = this.FindControl<Button>("ShiftEditBtn")!;
         _userDeleteBtn = this.FindControl<Button>("UserDeleteBtn")!;
         _shiftDeleteBtn = this.FindControl<Button>("ShiftDeleteBtn")!;
+        _deleteTableBtn = this.FindControl<Button>("DeleteTableBtn")!;
 
         LoadUsers();
         LoadShifts();
+        LoadTables();
     }
 
     private void LoadUsers()
@@ -55,6 +63,11 @@ public partial class AdminWindow : Window
     private void LoadShifts()
     {
         _shiftsDGrid.ItemsSource = _db.Shifts.Include(x => x.Users).Include(x => x.Orders).ToList();
+    } 
+    
+    private void LoadTables()
+    {
+        _tablesDGrid.ItemsSource = _db.Tables.ToList();
     } 
 
     // TODO
@@ -133,5 +146,27 @@ public partial class AdminWindow : Window
         _db.Shifts.Remove(selectedShift);
         await _db.SaveChangesAsync();
         LoadShifts();
+    }
+
+    private void TablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        _deleteTableBtn.IsEnabled = _tablesDGrid.SelectedItem != null;
+    }
+
+    private async void DeleteTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedTable = _tablesDGrid.SelectedItem as Table;
+        if (selectedTable == null)
+            return;
+        
+        _db.Tables.Remove(selectedTable);
+        await _db.SaveChangesAsync();
+        LoadTables();
+    }
+
+    private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        new AddTableWindow().ShowDialog(this);
+        LoadTables();
     }
 }

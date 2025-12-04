@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight"
+        x:Class="CafeApp.AdminWindows.AddTableWindow"
+        Title="AddTableWindow">
+    
+        <StackPanel Orientation="Vertical"
+                    Margin="20"
+                    Spacing="10">
+            <TextBox Name="NumberTextBox"
+                     Watermark="Введите номер столика"/>
+            <TextBlock Name="ErrorTextBlock"
+                       IsVisible="False"
+                       Foreground="Red"/>
+            <Button Name="SaveBtn"
+                    Content="Создать"
+                    HorizontalAlignment="Center"
+                    Click="SaveBtn_OnClick"/>
+            <Button Name="CancelBtn"
+                    Content="Отмена"
+                    HorizontalAlignment="Center"
+                    Click="CancelBtn_OnClick"/>
+        </StackPanel>
+        
+</Window>

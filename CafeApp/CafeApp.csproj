@@ -37,10 +37,6 @@
         <DependentUpon>AdminWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
-      <Compile Update="AdminWindows\RegistrationWindow.axaml.cs">
-        <DependentUpon>RegistrationWindow.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
       <Compile Update="AdminWindows\ShiftEditWindow.axaml.cs">
         <DependentUpon>ShiftEditWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
