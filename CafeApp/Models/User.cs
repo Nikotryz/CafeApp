@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeApp.Models;
 
-public partial class User
+public class User
 {
     public int Id { get; set; }
 
@@ -11,7 +11,7 @@ public partial class User
 
     public string Login { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
     public string Name { get; set; } = null!;
 

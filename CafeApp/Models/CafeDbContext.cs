@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CafeApp.Models;
 
-public partial class CafeDbContext : DbContext
+public class CafeDbContext : DbContext
 {
     public CafeDbContext() { }
 
@@ -22,8 +22,17 @@ public partial class CafeDbContext : DbContext
     
     public virtual DbSet<WaiterTable> WaiterTables { get; set; }
 
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        var connectionString1 =
+            "Host=10.30.0.137;Port=5432;Database=gr624_hanvl;Username=gr624_hanvl;Password=Nikita228900440@";
 
+        var connectionString2 =
+            "Host=localhost;Port=5432;Database=cafe_db;Username=postgres;Password=900440";
+        
+        optionsBuilder.UseNpgsql(connectionString2);
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Order>(entity =>
@@ -137,9 +146,8 @@ public partial class CafeDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .HasMaxLength(50)
-                .HasColumnName("password");
+            entity.Property(e => e.PasswordHash)
+                .HasColumnName("password_hash");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
@@ -173,9 +181,5 @@ public partial class CafeDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("waiter_tables_user_id_fkey");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeApp.Models;
 
-public partial class Table
+public class Table
 {
     public int Id { get; set; }
 

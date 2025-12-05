@@ -1,10 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:CafeApp"
+        xmlns:vm="clr-namespace:CafeApp.AdminWindows"
         x:DataType="vm:AdminWindow"
+        x:Class="CafeApp.AdminWindows.AdminWindow"
         Height="800" Width="1200"
         MinHeight="400" MinWidth="800"
-        x:Class="CafeApp.AdminWindow"
         Title="Окно администратора">
     
         <TabControl>
@@ -36,21 +36,27 @@
                                           AutoGenerateColumns="False"
                                           CanUserReorderColumns="False"
                                           CanUserResizeColumns="True"
-                                          ColumnWidth="*"
+                                          ColumnWidth="auto"
                                           SelectionChanged="UsersDataGrid_OnSelectionChanged">
                                         <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Логин" 
                                                                     Binding="{Binding Login}"
-                                                                    Width="auto"/>
-                                                <DataGridTextColumn Header="Пароль" 
-                                                                    Binding="{Binding Password}"
-                                                                    Width="auto"/>
+                                                                    IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Фамилия" 
+                                                                    Binding="{Binding LastName}"
+                                                                    IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Имя" 
+                                                                    Binding="{Binding Name}"
+                                                                    IsReadOnly="True"/>
+                                                <DataGridTextColumn Header="Отчество" 
+                                                                    Binding="{Binding MiddleName}"
+                                                                    IsReadOnly="True"/>
                                                 <DataGridTextColumn Header="Роль" 
                                                                     Binding="{Binding Role.Name}"
-                                                                    Width="auto"/>
+                                                                    IsReadOnly="True"/>
                                                 <DataGridTextColumn Header="Статус" 
                                                                     Binding="{Binding Status}"
-                                                                    Width="auto"/>
+                                                                    IsReadOnly="True"/>
                                         </DataGrid.Columns>
                                 </DataGrid>
                         </StackPanel>
@@ -87,21 +93,17 @@
                                           AutoGenerateColumns="False"
                                           CanUserReorderColumns="False"
                                           CanUserResizeColumns="True"
-                                          ColumnWidth="*"
+                                          ColumnWidth="auto"
                                           SelectionChanged="ShiftsDataGrid_OnSelectionChanged">
                                         <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Дата" 
-                                                                    Binding="{Binding ShiftStarted.Date, StringFormat=dd.MM.yyyy}"
-                                                                    Width="auto"/>
+                                                                    Binding="{Binding ShiftStarted.Date, StringFormat=dd.MM.yyyy}"/>
                                                 <DataGridTextColumn Header="Начало" 
-                                                                    Binding="{Binding ShiftStarted, StringFormat=HH:mm}"
-                                                                    Width="auto"/>
+                                                                    Binding="{Binding ShiftStarted, StringFormat=HH:mm}"/>
                                                 <DataGridTextColumn Header="Конец" 
-                                                                    Binding="{Binding ShiftEnds, StringFormat=HH:mm}"
-                                                                    Width="auto"/>
+                                                                    Binding="{Binding ShiftEnds, StringFormat=HH:mm}"/>
                                                 <DataGridTextColumn Header="Сотрудники"
-                                                                    Binding="{Binding Users.Count}"
-                                                                    Width="auto"/>
+                                                                    Binding="{Binding Users.Count}"/>
                                         </DataGrid.Columns>
                                 </DataGrid>
                         </StackPanel>

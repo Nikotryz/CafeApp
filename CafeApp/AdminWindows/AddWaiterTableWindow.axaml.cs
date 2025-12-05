@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using CafeApp.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,9 +15,9 @@ public partial class AddWaiterTableWindow : Window
     private readonly ComboBox _tableComboBox;
 
     private readonly Shift _shift;
-    
-    public List<User> Waiters { get; set; }
-    public List<Table> Tables { get; set; }
+
+    public List<User> Waiters { get; set; } = [];
+    public List<Table> Tables { get; set; } = [];
     
     public AddWaiterTableWindow(Shift shift)
     {
@@ -64,8 +62,5 @@ public partial class AddWaiterTableWindow : Window
         Close();
     }
 
-    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
 }

@@ -1,30 +1,18 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using CafeApp.AdminWindows;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CafeApp;
+namespace CafeApp.AdminWindows;
 
 public partial class AdminWindow : Window
 {
-    public List<User> UsersList { get; set; }
-    public List<Shift> ShiftsList { get; set; }
-    public List<Table> TablesList { get; set; }
-    
     private readonly DataGrid _usersDGrid;
     private readonly DataGrid _shiftsDGrid;
     private readonly DataGrid _tablesDGrid;
-
-    private readonly TextBox _searchTBox;
     
     private readonly Button _userEditBtn;
     private readonly Button _shiftEditBtn;
@@ -34,11 +22,13 @@ public partial class AdminWindow : Window
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
+    public List<User> UsersList { get; set; } = [];
+    public List<Shift> ShiftsList { get; set; } = [];
+    public List<Table> TablesList { get; set; } = [];
+    
     public AdminWindow()
     {
         InitializeComponent();
-
-        _searchTBox = this.FindControl<TextBox>("SearchTBox")!;
         
         _usersDGrid = this.FindControl<DataGrid>("UsersDGrid")!;
         _shiftsDGrid = this.FindControl<DataGrid>("ShiftsDGrid")!;
@@ -109,18 +99,14 @@ public partial class AdminWindow : Window
         LoadUsers();
     }
     
-    private void AddUserBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new UserEditWindow().ShowDialog(this);
-    }
+    private void AddUserBtn_OnClick(object? sender, RoutedEventArgs e) => new UserEditWindow().ShowDialog(this);
 
     private void ShiftsDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         _shiftEditBtn.IsEnabled = _shiftsDGrid.SelectedItem != null;
         _shiftDeleteBtn.IsEnabled = _shiftsDGrid.SelectedItem != null;
     }
-
-
+    
     private async void ShiftDeleteBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedShift = _shiftsDGrid.SelectedItem as Shift;
@@ -146,10 +132,7 @@ public partial class AdminWindow : Window
         new ShiftEditWindow().ShowDialog(this);
     }
 
-    private void TablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        _deleteTableBtn.IsEnabled = _tablesDGrid.SelectedItem != null;
-    }
+    private void TablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _deleteTableBtn.IsEnabled = _tablesDGrid.SelectedItem != null;
 
     private async void DeleteTableBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -162,23 +145,11 @@ public partial class AdminWindow : Window
         LoadTables();
     }
 
-    private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new AddTableWindow().ShowDialog(this);
-    }
+    private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e) => new AddTableWindow().ShowDialog(this);
     
-    private void RefreshUsersBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        LoadUsers();
-    }
+    private void RefreshUsersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadUsers();
 
-    private void RefreshShiftsBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        LoadShifts();
-    }
+    private void RefreshShiftsBtn_OnClick(object? sender, RoutedEventArgs e) => LoadShifts();
     
-    private void RefreshTablesBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        LoadTables();
-    }
+    private void RefreshTablesBtn_OnClick(object? sender, RoutedEventArgs e) => LoadTables();
 }

@@ -1,10 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Linq;
+using CafeApp.AdminWindows;
 using CafeApp.CookWindows;
+using CafeApp.WaiterWindows;
 using CafeApp.Helpers;
 using CafeApp.Models;
-using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,18 +39,19 @@ public partial class MainWindow : Window
         
         var userAuth = _db.Users
             .Include(x => x.Role)
-            .FirstOrDefault(u => u.Login == _loginTBox.Text && PasswordHasher.IsValid(_passwordTBox.Text, u.Password));
+            .FirstOrDefault(u => u.Login == _loginTBox.Text);
+        var passwordIsValid = PasswordHasher.IsValid(_passwordTBox.Text, userAuth?.PasswordHash ?? string.Empty);
         
-        var userRole = userAuth?.Role;
-
-        if (userAuth == null)
+        if (userAuth == null || !passwordIsValid)
         {
             _messageTBlock.Text = "Введенные логин или пароль неверны";
             _messageTBlock.IsVisible = true;
             return;
         }
+        
+        var userRole = userAuth.Role;
 
-        switch (userRole?.Name)
+        switch (userRole.Name)
         {
             case Roles.ADMIN_ROLE:
                 new AdminWindow().Show();

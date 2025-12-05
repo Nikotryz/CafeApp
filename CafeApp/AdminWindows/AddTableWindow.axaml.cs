@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using CafeApp.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -53,8 +51,5 @@ public partial class AddTableWindow : Window
         Close();
     }
 
-    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
 }

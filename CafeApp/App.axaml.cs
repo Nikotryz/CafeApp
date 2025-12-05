@@ -35,14 +35,8 @@ public partial class App : Application
     
     public static IServiceProvider ConfigureServices()
     {
-        var connectionString1 =
-            "Host=10.30.0.137;Port=5432;Database=gr624_hanvl;Username=gr624_hanvl;Password=Nikita228900440@";
-
-        var connectionString2 =
-            "Host=localhost;Port=5432;Database=cafe_db;Username=postgres;Password=900440";
-        
         var collection = new ServiceCollection();
-        collection.AddDbContext<CafeDbContext>(options => options.UseNpgsql(connectionString2));
+        collection.AddDbContext<CafeDbContext>();
 
         var services = collection.BuildServiceProvider();
         
@@ -60,6 +54,7 @@ public partial class App : Application
                 var waiterRole = new Role { Name = Roles.WAITER_ROLE };
                 
                 db.Roles.AddRange(adminRole,  cookRole, waiterRole);
+                db.SaveChanges();
             }
             
             var admin = db.Users.FirstOrDefault(x => x.Role.Name == Roles.ADMIN_ROLE);
@@ -70,7 +65,7 @@ public partial class App : Application
                 {
                     Role = db.Roles.FirstOrDefault(x => x.Name == Roles.ADMIN_ROLE),
                     Login = "Nikotryz",
-                    Password = PasswordHasher.HashPassword("900440"),
+                    PasswordHash = PasswordHasher.HashPassword("900440"),
                     Name = "Никита",
                     LastName = "Харламов",
                     MiddleName = "Владимирович",
@@ -79,6 +74,7 @@ public partial class App : Application
                 };
                 
                 db.Users.Add(newAdmin);
+                db.SaveChanges();
             }
         }
         

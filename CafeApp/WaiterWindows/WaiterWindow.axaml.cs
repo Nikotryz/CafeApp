@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +16,8 @@ public partial class WaiterWindow : Window
 
     private readonly Button _deleteOrderBtn;
     private readonly Button _editOrderBtn;
-    
-    public List<Order> Orders { get; set; }
+
+    public List<Order> Orders { get; set; } = [];
     
     public WaiterWindow()
     {
@@ -47,10 +44,13 @@ public partial class WaiterWindow : Window
         Close();
     }
 
-    private void RefreshOrdersBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        LoadOrders();
+        _deleteOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
+        _editOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
     }
+    
+    private void RefreshOrdersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadOrders();
 
     private void DeleteOrderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -69,14 +69,5 @@ public partial class WaiterWindow : Window
             new OrderEditWindow(selectedOrder).ShowDialog(this);
     }
 
-    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new OrderEditWindow().ShowDialog(this);
-    }
-
-    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        _deleteOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
-        _editOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
-    }
+    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow().ShowDialog(this);
 }

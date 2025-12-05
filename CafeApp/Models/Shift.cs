@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeApp.Models;
 
-public partial class Shift
+public class Shift
 {
     public int Id { get; set; }
 

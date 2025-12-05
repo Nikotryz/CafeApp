@@ -1,16 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using CafeApp.AdminWindows;
 using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CafeApp;
+namespace CafeApp.AdminWindows;
 
 public partial class ShiftEditWindow : Window
 {
@@ -18,16 +15,16 @@ public partial class ShiftEditWindow : Window
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
 
-    private DatePicker _shiftDPicker;
-    private TimePicker _shiftStartTPicker;
-    private TimePicker _shiftEndTPicker;
+    private readonly DatePicker _shiftDPicker;
+    private readonly TimePicker _shiftStartTPicker;
+    private readonly TimePicker _shiftEndTPicker;
     
-    private DataGrid _shiftUsersDataGrid;
-    private DataGrid _waiterTablesDataGrid;
+    private readonly DataGrid _shiftUsersDataGrid;
+    private readonly DataGrid _waiterTablesDataGrid;
     
-    private Button _deleteWaiterTableBtn;
+    private readonly Button _deleteWaiterTableBtn;
     
-    private TextBlock _errorTextBlock;
+    private readonly TextBlock _errorTextBlock;
 
     public List<SelectionUser> Users { get; set; } = [];
     public List<WaiterTable> WaiterTables { get; set; } = [];
@@ -36,33 +33,6 @@ public partial class ShiftEditWindow : Window
     {
         InitializeComponent();
         
-        FindControls();
-        
-        LoadUsers();
-    }
-
-    public ShiftEditWindow(Shift shift)
-    {
-        InitializeComponent();
-
-        FindControls();
-        
-        _editShift = shift;
-
-        var date = shift.ShiftStarted.Date;
-        var startTime = shift.ShiftStarted.TimeOfDay;
-        var endTime = shift.ShiftEnds.TimeOfDay;
-        
-        _shiftDPicker!.SelectedDate = date;
-        _shiftStartTPicker!.SelectedTime = startTime;
-        _shiftEndTPicker!.SelectedTime = endTime;
-        
-        LoadUsers();
-        LoadWaiterTables();
-    }
-
-    private void FindControls()
-    {
         _shiftDPicker = this.FindControl<DatePicker>("ShiftDPicker")!;
         _shiftStartTPicker = this.FindControl<TimePicker>("ShiftStartTPicker")!;
         _shiftEndTPicker = this.FindControl<TimePicker>("ShiftEndTPicker")!;
@@ -73,6 +43,24 @@ public partial class ShiftEditWindow : Window
         _deleteWaiterTableBtn = this.FindControl<Button>("DeleteWaiterTableBtn")!;
         
         _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
+        
+        LoadUsers();
+    }
+
+    // : this() означает что при вызове этого конструктора сначала будет вызван базовый конструктор (который выше)
+    public ShiftEditWindow(Shift shift) : this()
+    {
+        _editShift = shift;
+
+        var date = shift.ShiftStarted.Date;
+        var startTime = shift.ShiftStarted.TimeOfDay;
+        var endTime = shift.ShiftEnds.TimeOfDay;
+        
+        _shiftDPicker!.SelectedDate = date;
+        _shiftStartTPicker!.SelectedTime = startTime;
+        _shiftEndTPicker!.SelectedTime = endTime;
+        
+        LoadWaiterTables();
     }
 
     private void LoadUsers()
@@ -93,10 +81,43 @@ public partial class ShiftEditWindow : Window
         _shiftUsersDataGrid.ItemsSource = selectionUsers;
     }
 
-    private void LoadWaiterTables()
+    // => просто сокращенная запись метода в одну строчку
+    private void LoadWaiterTables() => _waiterTablesDataGrid.ItemsSource = _db.WaiterTables.Where(x => x.Shift == _editShift).ToList();
+
+    private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
-        _waiterTablesDataGrid.ItemsSource = _db.WaiterTables.Where(x => x.Shift == _editShift).ToList();
+        var selectedUser = _shiftUsersDataGrid.SelectedItem as SelectionUser;
+        if (selectedUser == null)
+            return;
+        
+        var user = Users.First(x => x.User.Id == selectedUser.User.Id);
+        
+        var checkBox = sender as CheckBox;
+        user.IsSelected = checkBox?.IsChecked ?? false;
+        
+        Users.Remove(selectedUser);
+        Users.Add(user);
+        
+        _shiftUsersDataGrid.ItemsSource = Users;
     }
+
+    private void WaiterTablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _deleteWaiterTableBtn.IsEnabled = _waiterTablesDataGrid.SelectedItem != null;
+
+    private async void DeleteWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedWaiterTable = _waiterTablesDataGrid.SelectedItem as WaiterTable;
+        if (selectedWaiterTable == null)
+            return;
+        
+        _db.WaiterTables.Remove(selectedWaiterTable);
+        await _db.SaveChangesAsync();
+        
+        LoadWaiterTables();
+    }
+    
+    private void AddWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e) => new AddWaiterTableWindow(_editShift).ShowDialog(this);
+
+    private void RefreshBtn_OnClick(object? sender, RoutedEventArgs e) => LoadWaiterTables();
 
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -140,52 +161,5 @@ public partial class ShiftEditWindow : Window
         Close();
     }
 
-    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
-    private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
-    {
-        var selectedUser = _shiftUsersDataGrid.SelectedItem as SelectionUser;
-        if (selectedUser == null)
-            return;
-        
-        var user = Users.First(x => x.User.Id == selectedUser.User.Id);
-        
-        var checkBox = sender as CheckBox;
-        user.IsSelected = checkBox?.IsChecked ?? false;
-        
-        Users.Remove(selectedUser);
-        Users.Add(user);
-        
-        _shiftUsersDataGrid.ItemsSource = Users;
-    }
-
-    private void WaiterTablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        _deleteWaiterTableBtn.IsEnabled = _waiterTablesDataGrid.SelectedItem != null;
-    }
-
-    private async void DeleteWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        var selectedWaiterTable = _waiterTablesDataGrid.SelectedItem as WaiterTable;
-        if (selectedWaiterTable == null)
-            return;
-        
-        _db.WaiterTables.Remove(selectedWaiterTable);
-        await _db.SaveChangesAsync();
-        
-        LoadWaiterTables();
-    }
-
-    private void AddWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new AddWaiterTableWindow(_editShift).ShowDialog(this);
-    }
-
-    private void RefreshBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        LoadWaiterTables();
-    }
+    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
 }

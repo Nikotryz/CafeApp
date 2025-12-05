@@ -1,10 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:CafeApp"
+        xmlns:vm="clr-namespace:CafeApp.AdminWindows"
         x:DataType="vm:UserEditWindow"
+        x:Class="CafeApp.AdminWindows.UserEditWindow"
         Height="800" Width="1200"
         MinHeight="600" MinWidth="1100"
-        x:Class="CafeApp.UserEditWindow"
         Title="Окно изменения/добавления пользователя">
     
     <StackPanel Orientation="Vertical"
@@ -16,26 +16,21 @@
             <StackPanel Grid.Column="0"
                         Orientation="Vertical"
                         Margin="25"
+                        Spacing="10"
                         VerticalAlignment="Top">
                 
                 <!-- Основные поля -->
                 <TextBox Name="LoginTBox"
-                         Watermark="Введите логин"
-                         Margin="0 0 0 10"/>
+                         Watermark="Введите логин"/>
                 <TextBox Name="PasswordTBox"
-                         Watermark="Введите пароль"
-                         Margin="0 0 0 10"/>
+                         Watermark="Введите пароль, чтобы обновить его"/>
                 <TextBox Name="NameTBox"
-                         Watermark="Введите имя"
-                         Margin="0 0 0 10"/>
+                         Watermark="Введите имя"/>
                 <TextBox Name="LastNameTBox"
-                         Watermark="Введите фамилию"
-                         Margin="0 0 0 10"/>
+                         Watermark="Введите фамилию"/>
                 <TextBox Name="MiddleNameTBox"
-                         Watermark="Введите отчество"
-                         Margin="0 0 0 10"/>
-                <DatePicker Name="BirthdayDPicker"
-                            Margin="0 0 0 10"/>
+                         Watermark="Введите отчество"/>
+                <DatePicker Name="BirthdayDPicker"/>
                 
                 <!-- Выбор роли -->
                 <ComboBox Name="RoleCBox"
@@ -89,6 +84,11 @@
             </StackPanel>
             
         </Grid>
+        
+        <TextBlock Name="ErrorTextBlock"
+                   HorizontalAlignment="Center"
+                   Foreground="Red"
+                   IsVisible="False"/>
         
         <!-- Кнопки управления -->
         <Button Content="Сохранить"
