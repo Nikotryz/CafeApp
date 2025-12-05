@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
@@ -14,9 +15,11 @@ public partial class WaiterWindow : Window
     
     private readonly DataGrid _ordersDataGrid;
 
+    private readonly TextBlock _currentShiftTextBlock;
     private readonly Button _deleteOrderBtn;
     private readonly Button _editOrderBtn;
 
+    public Shift? CurrentShift { get; set; }
     public List<Order> Orders { get; set; } = [];
     
     public WaiterWindow()
@@ -26,7 +29,12 @@ public partial class WaiterWindow : Window
         _ordersDataGrid = this.FindControl<DataGrid>("OrdersDataGrid")!;
         _deleteOrderBtn = this.FindControl<Button>("DeleteOrderBtn")!;
         _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
+        _currentShiftTextBlock = this.FindControl<TextBlock>("CurrentShiftTextBlock")!;
+        
+        CurrentShift = GetCurrentShift();
 
+        _currentShiftTextBlock.Text = GetCurrentShift()?.ShiftStarted.ToString("dd.MM.yyyy HH:mm");
+        
         LoadOrders();
     }
 
@@ -66,8 +74,10 @@ public partial class WaiterWindow : Window
     {
         var selectedOrder = _ordersDataGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, CurrentShift).ShowDialog(this);
     }
 
-    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow().ShowDialog(this);
+    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow(CurrentShift).ShowDialog(this);
+    
+    private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
 }

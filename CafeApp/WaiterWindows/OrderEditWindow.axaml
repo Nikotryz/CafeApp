@@ -35,86 +35,14 @@
                      Width="400"/>
             
             <ComboBox Name="PaymentMethodComboBox"
-                      ItemsSource="{Binding Statuses}"
+                      ItemsSource="{Binding PaymentMethods}"
                       Width="200"/>
-            
-            <!--
-            <TextBlock Text="Сотрудники" Margin="0 10 0 10"/>
-            <DataGrid Name="ShiftUsersDataGrid"
-                      ItemsSource="{Binding Users}"
-                      AutoGenerateColumns="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="True"
-                      ColumnWidth="auto"
-                      SelectionMode="Single"
-                      Margin="0 0 0 20">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Логин" 
-                                        Binding="{Binding User.Login}"
-                                        IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Фамилия" 
-                                        Binding="{Binding User.LastName}"
-                                        IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Имя" 
-                                        Binding="{Binding User.Name}"
-                                        IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Отчество" 
-                                        Binding="{Binding User.MiddleName}"
-                                        IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Роль" 
-                                        Binding="{Binding User.Role.Name}"
-                                        IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Работает в смену">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox HorizontalAlignment="Center"
-                                          IsChecked="{Binding IsSelected}"
-                                          IsCheckedChanged="ToggleButton_OnIsCheckedChanged"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        Spacing="10"
-                        Margin="0 0 0 10">
-                <TextBlock Text="Ограничения официантов на столики"
-                           VerticalAlignment="Center"/>
-                <Button Content="Удалить"
-                        Foreground="Red"
-                        Name="DeleteWaiterTableBtn"
-                        IsEnabled="False"
-                        Click="DeleteWaiterTableBtn_OnClick"/>
-                <Button Name="AddWaiterTableBtn"
-                        Content="Добавить"
-                        Click="AddWaiterTableBtn_OnClick"/>
-                <Button Name="RefreshBtn"
-                        Content="Обновить"
-                        Click="RefreshBtn_OnClick"/>
-            </StackPanel>
-            <DataGrid Name="WaiterTablesDataGrid"
-                      ItemsSource="{Binding WaiterTables}"
-                      AutoGenerateColumns="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="True"
-                      ColumnWidth="auto"
-                      Margin="0 0 0 50"
-                      SelectionChanged="WaiterTablesDataGrid_OnSelectionChanged">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Логин официанта" 
-                                        Binding="{Binding User.Login}"/>
-                    <DataGridTextColumn Header="Номер столика" 
-                                        Binding="{Binding Table.Number}"/>
-                </DataGrid.Columns>
-            </DataGrid>
             
             <TextBlock Name="ErrorTextBlock"
                        HorizontalAlignment="Center"
                        Foreground="Red"
-                       IsVisible="False"></TextBlock>
-            -->
+                       IsVisible="False"/>
+            
             <Button Content="Сохранить"
                     Width="200"
                     HorizontalAlignment="Center"

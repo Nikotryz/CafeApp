@@ -60,6 +60,7 @@ public partial class ShiftEditWindow : Window
         _shiftStartTPicker!.SelectedTime = startTime;
         _shiftEndTPicker!.SelectedTime = endTime;
         
+        LoadUsers();
         LoadWaiterTables();
     }
 

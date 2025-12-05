@@ -97,7 +97,7 @@
             <TextBlock Name="ErrorTextBlock"
                        HorizontalAlignment="Center"
                        Foreground="Red"
-                       IsVisible="False"></TextBlock>
+                       IsVisible="False"/>
             
             <Button Content="Сохранить"
                     Width="200"
