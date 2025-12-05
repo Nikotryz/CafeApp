@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Linq;
 using CafeApp.CookWindows;
+using CafeApp.Helpers;
 using CafeApp.Models;
 using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,10 @@ public partial class MainWindow : Window
             return;
         }
         
-        var userAuth = _db.Users.Include(x => x.Role).FirstOrDefault(u => u.Login == _loginTBox.Text && u.Password == _passwordTBox.Text);
+        var userAuth = _db.Users
+            .Include(x => x.Role)
+            .FirstOrDefault(u => u.Login == _loginTBox.Text && PasswordHasher.IsValid(_passwordTBox.Text, u.Password));
+        
         var userRole = userAuth?.Role;
 
         if (userAuth == null)

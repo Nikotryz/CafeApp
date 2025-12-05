@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,22 +17,22 @@ namespace CafeApp;
 
 public partial class UserEditWindow : Window
 {
-    private TextBox _loginTBox;
-    private TextBox _passwordTBox;
-    private TextBox _nameTBox;
-    private TextBox _lastNameTBox;
-    private TextBox _middleNameTBox;
-    private DatePicker _birthdayDPicker;
-    private ComboBox _roleCBox;
-    private ComboBox _statusCBox;
+    private readonly TextBox _loginTBox;
+    private readonly TextBox _passwordTBox;
+    private readonly TextBox _nameTBox;
+    private readonly TextBox _lastNameTBox;
+    private readonly TextBox _middleNameTBox;
+    private readonly DatePicker _birthdayDPicker;
+    private readonly ComboBox _roleCBox;
+    private readonly ComboBox _statusCBox;
 
     private Image _employeeImageBox;
     private Image _contractImageBox;
     
     private readonly User _editUser = new();
-    
-    public List<Role> Roles { get; set; }
-    public List<string> Statuses { get; set; }
+
+    public List<Role> Roles { get; set; } = [];
+    public List<string> Statuses { get; set; } = [];
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -39,42 +40,6 @@ public partial class UserEditWindow : Window
     {
         InitializeComponent();
         
-        FindControls();
-        
-        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == CafeApp.Roles.WAITER_ROLE);
-        
-        _roleCBox!.ItemsSource = _db.Roles.ToList();
-        _roleCBox.SelectedItem = defaultRole;
-        
-        _statusCBox!.ItemsSource = new string[] {UserStatuses.USER_WORKED, UserStatuses.USER_FIRED};
-        _statusCBox.SelectedItem = UserStatuses.USER_WORKED;
-    }
-
-    public UserEditWindow(User editUser)
-    {
-        InitializeComponent();
-        
-        FindControls();
-        
-        _editUser = editUser;
-        
-        _roleCBox!.ItemsSource = _db.Roles.ToList();
-        _statusCBox!.ItemsSource = new string[] { UserStatuses.USER_WORKED, UserStatuses.USER_FIRED };
-
-        _loginTBox!.Text = editUser.Login;
-        _passwordTBox!.Text = editUser.Password;
-        _roleCBox.SelectedItem = editUser.Role;
-        _statusCBox!.SelectedItem = editUser.Status;
-        _nameTBox!.Text = editUser.Name;
-        _lastNameTBox!.Text = editUser.LastName;
-        _middleNameTBox!.Text = editUser.MiddleName;
-        _birthdayDPicker!.SelectedDate = editUser.Birthday.ToDateTime(new TimeOnly(0, 0));
-        _employeeImageBox!.Source = editUser.UserPhoto?.ToBitmap();
-        _contractImageBox!.Source = editUser.ContractPhoto?.ToBitmap();
-    }
-
-    private void FindControls()
-    {
         _loginTBox = this.FindControl<TextBox>("LoginTBox")!;
         _passwordTBox = this.FindControl<TextBox>("PasswordTBox")!;
         _roleCBox = this.FindControl<ComboBox>("RoleCBox")!;
@@ -85,6 +50,31 @@ public partial class UserEditWindow : Window
         _employeeImageBox = this.FindControl<Image>("EmployeeImageBox")!;
         _contractImageBox = this.FindControl<Image>("ContractImageBox")!;
         _statusCBox = this.FindControl<ComboBox>("StatusCBox")!;
+        
+        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == CafeApp.Roles.WAITER_ROLE);
+        
+        _roleCBox!.ItemsSource = _db.Roles.ToList();
+        _roleCBox.SelectedItem = defaultRole;
+        
+        _statusCBox!.ItemsSource = UserStatuses.List;
+        _statusCBox.SelectedItem = UserStatuses.USER_WORKED;
+    }
+
+    public UserEditWindow(User editUser) : this()
+    {
+        InitializeComponent();
+        
+        _editUser = editUser;
+
+        _loginTBox!.Text = editUser.Login;
+        _roleCBox.SelectedItem = editUser.Role;
+        _statusCBox!.SelectedItem = editUser.Status;
+        _nameTBox!.Text = editUser.Name;
+        _lastNameTBox!.Text = editUser.LastName;
+        _middleNameTBox!.Text = editUser.MiddleName;
+        _birthdayDPicker!.SelectedDate = editUser.Birthday.ToDateTime(new TimeOnly(0, 0));
+        _employeeImageBox!.Source = editUser.UserPhoto?.ToBitmap();
+        _contractImageBox!.Source = editUser.ContractPhoto?.ToBitmap();
     }
     
     private void BackBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -95,7 +85,6 @@ public partial class UserEditWindow : Window
     private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(_loginTBox.Text) &&
-            !string.IsNullOrWhiteSpace(_passwordTBox.Text) &&
             !string.IsNullOrWhiteSpace(_nameTBox.Text) &&
             !string.IsNullOrWhiteSpace(_lastNameTBox.Text) &&
             !string.IsNullOrWhiteSpace(_middleNameTBox.Text) &&
@@ -104,7 +93,13 @@ public partial class UserEditWindow : Window
             _statusCBox.SelectedItem is string status)
         {
             _editUser.Login = _loginTBox.Text;
-            _editUser.Password = _passwordTBox.Text;
+
+            if (!string.IsNullOrWhiteSpace(_passwordTBox.Text))
+            {
+                string hashedPassword = PasswordHasher.HashPassword(_passwordTBox.Text);
+                _editUser.Password = hashedPassword;
+            }
+            
             _editUser.Role = selectedRole;
             _editUser.Name = _nameTBox.Text;
             _editUser.LastName = _lastNameTBox.Text;

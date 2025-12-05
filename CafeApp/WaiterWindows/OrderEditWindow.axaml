@@ -34,6 +34,10 @@
                      Watermark="Итоговая сумма заказа"
                      Width="400"/>
             
+            <ComboBox Name="PaymentMethodComboBox"
+                      ItemsSource="{Binding Statuses}"
+                      Width="200"/>
+            
             <!--
             <TextBlock Text="Сотрудники" Margin="0 10 0 10"/>
             <DataGrid Name="ShiftUsersDataGrid"

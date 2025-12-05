@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +50,36 @@ public partial class App : Application
         {
             var db = scope.ServiceProvider.GetRequiredService<CafeDbContext>();
             db.Database.Migrate();
+            
+            var rolesExist = db.Roles.Any();
+            
+            if (!rolesExist)
+            {
+                var adminRole = new Role { Name = Roles.ADMIN_ROLE };
+                var cookRole = new Role { Name = Roles.COOK_ROLE };
+                var waiterRole = new Role { Name = Roles.WAITER_ROLE };
+                
+                db.Roles.AddRange(adminRole,  cookRole, waiterRole);
+            }
+            
+            var admin = db.Users.FirstOrDefault(x => x.Role.Name == Roles.ADMIN_ROLE);
+            
+            if (admin == null)
+            {
+                var newAdmin = new User
+                {
+                    Role = db.Roles.FirstOrDefault(x => x.Name == Roles.ADMIN_ROLE),
+                    Login = "Nikotryz",
+                    Password = PasswordHasher.HashPassword("900440"),
+                    Name = "Никита",
+                    LastName = "Харламов",
+                    MiddleName = "Владимирович",
+                    Birthday = DateOnly.FromDateTime(DateTime.Parse("05.09.2006")),
+                    Status = UserStatuses.USER_WORKED
+                };
+                
+                db.Users.Add(newAdmin);
+            }
         }
         
         return services;
