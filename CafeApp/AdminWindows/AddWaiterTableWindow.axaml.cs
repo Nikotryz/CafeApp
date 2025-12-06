@@ -15,19 +15,15 @@ public partial class AddWaiterTableWindow : Window
     private readonly ComboBox _waiterComboBox;
     private readonly ComboBox _tableComboBox;
 
-    private readonly Shift _shift;
-
     public List<User> Waiters { get; set; } = [];
     public List<Table> Tables { get; set; } = [];
     
-    public AddWaiterTableWindow(Shift shift)
+    public AddWaiterTableWindow()
     {
         InitializeComponent();
         
         _waiterComboBox = this.FindControl<ComboBox>("WaiterComboBox")!;
         _tableComboBox = this.FindControl<ComboBox>("TableComboBox")!;
-        
-        _shift = shift;
 
         LoadData();
     }
@@ -41,7 +37,7 @@ public partial class AddWaiterTableWindow : Window
         _tableComboBox.ItemsSource = _db.Tables.ToList();
     }
 
-    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedWaiter = _waiterComboBox.SelectedItem as User;
         var selectedTable = _tableComboBox.SelectedItem as Table;
@@ -49,19 +45,10 @@ public partial class AddWaiterTableWindow : Window
         if (selectedWaiter == null || selectedTable == null)
             return;
 
-        var existingWaiterTable = _db.WaiterTables
-            .Where(x => x.Shift == _shift && x.User == selectedWaiter && x.Table == selectedTable)
-            .FirstOrDefault();
-
-        if (existingWaiterTable == null)
-        {
-            var waiterTable = new WaiterTable { Shift = _shift, User = selectedWaiter, Table = selectedTable };
-            await _db.WaiterTables.AddAsync(waiterTable);
-            await _db.SaveChangesAsync();
-        }
-        
-        Close();
+        var waiterTable = new WaiterTable { User = selectedWaiter, Table = selectedTable };
+            
+        Close(waiterTable);
     }
 
-    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
+    private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close(null);
 }

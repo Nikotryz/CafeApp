@@ -1,8 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:CafeApp.AdminWindows"
-        Height="800" Width="1200"
-        MinHeight="400" MinWidth="800"
+        Width="1200" MinWidth="800"
+        SizeToContent="Height" MinHeight="400" 
         x:Class="CafeApp.AdminWindows.ShiftEditWindow"
         x:DataType="vm:ShiftEditWindow"
         Title="Создание/редактирование смены">
@@ -74,9 +74,6 @@
                 <Button Name="AddWaiterTableBtn"
                         Content="Добавить"
                         Click="AddWaiterTableBtn_OnClick"/>
-                <Button Name="RefreshBtn"
-                        Content="Обновить"
-                        Click="RefreshBtn_OnClick"/>
             </StackPanel>
             <DataGrid Name="WaiterTablesDataGrid"
                       ItemsSource="{Binding WaiterTables}"

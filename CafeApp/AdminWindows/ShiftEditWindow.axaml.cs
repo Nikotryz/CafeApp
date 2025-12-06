@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
@@ -11,7 +12,7 @@ namespace CafeApp.AdminWindows;
 
 public partial class ShiftEditWindow : Window
 {
-    private readonly Shift _editShift = new();
+    private readonly Shift? _editShift;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
 
@@ -60,6 +61,8 @@ public partial class ShiftEditWindow : Window
         _shiftStartTPicker!.SelectedTime = startTime;
         _shiftEndTPicker!.SelectedTime = endTime;
         
+        WaiterTables = _db.WaiterTables.Where(x => x.ShiftId == shift.Id).ToList();
+        
         LoadUsers();
         LoadWaiterTables();
     }
@@ -83,7 +86,7 @@ public partial class ShiftEditWindow : Window
     }
 
     // => просто сокращенная запись метода в одну строчку
-    private void LoadWaiterTables() => _waiterTablesDataGrid.ItemsSource = _db.WaiterTables.Where(x => x.Shift == _editShift).ToList();
+    private void LoadWaiterTables() => _waiterTablesDataGrid.ItemsSource = WaiterTables.ToList();
 
     private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
     {
@@ -104,58 +107,91 @@ public partial class ShiftEditWindow : Window
 
     private void WaiterTablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _deleteWaiterTableBtn.IsEnabled = _waiterTablesDataGrid.SelectedItem != null;
 
-    private async void DeleteWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    private void DeleteWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedWaiterTable = _waiterTablesDataGrid.SelectedItem as WaiterTable;
-        if (selectedWaiterTable == null)
-            return;
-        
-        _db.WaiterTables.Remove(selectedWaiterTable);
-        await _db.SaveChangesAsync();
+        if (selectedWaiterTable != null)
+            WaiterTables.Remove(selectedWaiterTable);
         
         LoadWaiterTables();
     }
-    
-    private void AddWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e) => new AddWaiterTableWindow(_editShift).ShowDialog(this);
 
-    private void RefreshBtn_OnClick(object? sender, RoutedEventArgs e) => LoadWaiterTables();
+    private async void AddWaiterTableBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var waiterTable = await new AddWaiterTableWindow().ShowDialog<WaiterTable?>(this);
+
+        if (waiterTable != null && !WaiterTables.Any(x => x.Table == waiterTable.Table && x.User == waiterTable.User))
+            WaiterTables.Add(waiterTable);
+        
+        LoadWaiterTables();
+    }
 
     private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
+        var shift = _editShift ?? new Shift();
+        
         if (_shiftDPicker.SelectedDate == null ||
             _shiftStartTPicker.SelectedTime == null ||
             _shiftEndTPicker.SelectedTime == null)
         {
-            _errorTextBlock.Text = "Не все поля заполнены";
-            _errorTextBlock.IsVisible = true;
+            ShowMessage("Не все поля заполнены");
             return;
         }
         
         var date = _shiftDPicker.SelectedDate.Value.DateTime;
         var startTime = _shiftStartTPicker.SelectedTime.Value;
         var endTime = _shiftEndTPicker.SelectedTime.Value;
+
+        if (date < DateTime.Today.ToLocalTime())
+        {
+            ShowMessage("Нельзя сделать смену на прошедшую дату");
+            return;
+        }
+        
+        if (date > DateTime.Today.AddDays(5).ToLocalTime())
+        {
+            ShowMessage("Смены можно делать не более чем на 5 дней вперед");
+            return;
+        }
         
         var fullStartDate = date.Add(startTime);
         var fullEndDate = date.Add(endTime);
+
+        if (fullStartDate >= fullEndDate)
+        {
+            ShowMessage("Смена заканчивается раньше чем начинается");
+            return;
+        }
         
-        _editShift.ShiftStarted = fullStartDate;
-        _editShift.ShiftEnds = fullEndDate;
+        shift.ShiftStarted = fullStartDate;
+        shift.ShiftEnds = fullEndDate;
         
         var selectedUsers = Users.Where(x => x.IsSelected).Select(x => x.User).ToList();
 
         if (selectedUsers.Count < 4 || selectedUsers.Count > 7)
         {
-            _errorTextBlock.Text = "Сотрудников на смене должно быть от 4 до 7";
-            _errorTextBlock.IsVisible = true;
+            ShowMessage("Сотрудников на смене должно быть от 4 до 7");
             return;
         }
         
-        _editShift.Users = selectedUsers;
+        shift.Users = selectedUsers;
         
-        if (_editShift.Id != 0)
-            _db.Shifts.Update(_editShift);
+        if (_editShift != null)
+            _db.Shifts.Update(shift);
         else
-            await _db.Shifts.AddAsync(_editShift);
+            await _db.Shifts.AddAsync(shift);
+
+        await _db.SaveChangesAsync();
+        
+        _db.WaiterTables.RemoveRange(_db.WaiterTables.Where(x => x.ShiftId == shift.Id));
+        
+        await _db.SaveChangesAsync();
+        
+        foreach (var waiterTable in WaiterTables)
+        {
+            waiterTable.Shift = shift;
+            await _db.WaiterTables.AddAsync(waiterTable);
+        }
         
         await _db.SaveChangesAsync();
 
@@ -163,4 +199,10 @@ public partial class ShiftEditWindow : Window
     }
 
     private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
+
+    private void ShowMessage(string message)
+    {
+        _errorTextBlock.Text = message;
+        _errorTextBlock.IsVisible = true;
+    }
 }
