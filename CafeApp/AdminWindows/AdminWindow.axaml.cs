@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using CafeApp.Helpers;
 using CafeApp.Models;
 using CafeApp.WaiterWindows;
@@ -22,7 +25,7 @@ public partial class AdminWindow : Window
     private readonly Button _userDeleteBtn;
     private readonly Button _shiftDeleteBtn;
     private readonly Button _deleteTableBtn;
-    private readonly Button _checkOrderBtn;
+    private readonly Button _editOrderBtn;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -46,7 +49,7 @@ public partial class AdminWindow : Window
         _userDeleteBtn = this.FindControl<Button>("UserDeleteBtn")!;
         _shiftDeleteBtn = this.FindControl<Button>("ShiftDeleteBtn")!;
         _deleteTableBtn = this.FindControl<Button>("DeleteTableBtn")!;
-        _checkOrderBtn = this.FindControl<Button>("CheckOrderBtn")!;
+        _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
 
         LoadUsers();
         LoadShifts();
@@ -155,23 +158,122 @@ public partial class AdminWindow : Window
     }
 
     private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e) => new AddTableWindow().ShowDialog(this);
-    
-    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _checkOrderBtn.IsEnabled = _ordersDGrid.SelectedItem != null;
+
+    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        var selectedOrder = _ordersDGrid.SelectedItem as Order;
+        _editOrderBtn.IsEnabled = selectedOrder != null && selectedOrder.Status != OrderStatuses.PAID;
+    }
     
     private void RefreshUsersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadUsers();
 
     private void RefreshShiftsBtn_OnClick(object? sender, RoutedEventArgs e) => LoadShifts();
     
     private void RefreshTablesBtn_OnClick(object? sender, RoutedEventArgs e) => LoadTables();
-
-    private void CheckOrderBtn_OnClick(object? sender, RoutedEventArgs e)
+    
+    private void EditOrderBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedOrder = _ordersDGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder, selectedOrder.Shift, GetUserRole()).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, selectedOrder.Shift).ShowDialog(this);
     }
     
     private void RefreshOrdersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadOrders();
+
+    private async void AllOrdersReportXlsxBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var currentShift = GetCurrentShift();
+        
+        if (currentShift == null)
+            throw new NotImplementedException("Смена отсутствует");
+
+        var orders = GetOrders();
+
+        var pathToSave = await GetPathToSaveAsync(currentShift);
+
+        if (pathToSave != null)
+            await ReportFactory.MakeReport(orders, pathToSave);
+    }
+
+    private async void AllOrdersReportPdfBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var currentShift = GetCurrentShift();
+        
+        if (currentShift == null)
+            throw new NotImplementedException("Смена отсутствует");
+
+        var orders = GetOrders();
+
+        var pathToSave = await GetPathToSaveAsync(currentShift/*, pdf: true*/);
+
+        if (pathToSave != null)
+            await ReportFactory.MakeReport(orders, pathToSave, isPdf: true);
+    }
+
+    private async void PaidOrdersReportXlsxBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var currentShift = GetCurrentShift();
+        
+        if (currentShift == null)
+            throw new NotImplementedException("Смена отсутствует");
+        
+        var orders = GetOrders(paid: true);
+
+        var pathToSave = await GetPathToSaveAsync(currentShift);
+
+        if (pathToSave != null)
+            await ReportFactory.MakeReport(orders, pathToSave);
+    }
+
+    private async void PaidOrdersReportPdfBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var currentShift = GetCurrentShift();
+        
+        if (currentShift == null)
+            throw new NotImplementedException("Смена отсутствует");
+        
+        var orders = GetOrders(paid: true);
+
+        var pathToSave = await GetPathToSaveAsync(currentShift/*, pdf: true*/);
+
+        if (pathToSave != null)
+            await ReportFactory.MakeReport(orders, pathToSave, isPdf: true);
+    }
+
+    private List<Order> GetOrders(bool paid = false)
+    {
+        var currentShift = GetCurrentShift();
+        
+        if (currentShift == null)
+            throw new NotImplementedException("Смена отсутствует");
+        
+        var orders = _db.Orders
+            .Include(x => x.Shift)
+            .Include(x => x.Table)
+            .Where(x => x.Shift == currentShift)
+            .ToList();
+        
+        if (paid)
+            orders = orders.Where(x => x.Status == OrderStatuses.PAID).ToList();
+
+        return orders;
+    }
     
-    private Role GetUserRole() => _db.Roles.First(x => x.Name == Roles.ADMIN_ROLE);
+    private async Task<string?> GetPathToSaveAsync(Shift shift, bool pdf = false)
+    {
+        var type = pdf ? "pdf" : "xlsx";
+        var filesType = pdf ? "Pdf Files" : "Excel Files";
+        var patterns = pdf ? "*.pdf" : "*.xlsx";
+        
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Сохранить ПКО",
+            SuggestedFileName = $"Отчет_№{shift.Id}_{DateTime.Now.ToLocalTime().ToString("dd_MM_yyyy")}.{type}",
+            FileTypeChoices = new[] { new FilePickerFileType(filesType) { Patterns = [patterns] } }
+        });
+        
+        return file?.TryGetLocalPath();
+    }
+    
+    private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
 }

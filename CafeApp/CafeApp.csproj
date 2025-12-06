@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Aspose.Cells" Version="25.11.0" />
         <PackageReference Include="Avalonia" Version="11.3.6" />
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.6" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
@@ -52,5 +53,7 @@
     <ItemGroup>
       <None Remove="Resourses\ПКО.xlsx" />
       <EmbeddedResource Include="Resources\ПКО.xlsx" />
+      <None Remove="Resources\AdminReport.xlsx" />
+      <EmbeddedResource Include="Resources\AdminReport.xlsx" />
     </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@
         <entry key="CafeApp/CookWindows/CookWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/EditShiftWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/MainWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/Resources/WaiterWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/ShiftEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/UserEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/WaiterWindows/OrderEditWindow.axaml" value="CafeApp/CafeApp.csproj" />

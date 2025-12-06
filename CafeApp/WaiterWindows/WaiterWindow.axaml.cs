@@ -78,14 +78,12 @@ public partial class WaiterWindow : Window
     {
         var selectedOrder = _ordersDataGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder, CurrentShift, GetUserRole()).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, CurrentShift).ShowDialog(this);
     }
 
-    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow(CurrentShift, GetUserRole()).ShowDialog(this);
+    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow(CurrentShift).ShowDialog(this);
     
     private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
-
-    private Role GetUserRole() => _db.Roles.First(x => x.Name == Roles.WAITER_ROLE);
 
     private void MakeReportBtn_OnClick(object? sender, RoutedEventArgs e) => new WaiterReportWindow(GetCurrentShift()).ShowDialog(this);
 }

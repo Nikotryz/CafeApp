@@ -148,10 +148,10 @@
                                         <Button Name="RefreshOrdersBtn"
                                                 Content="Обновить"
                                                 Click="RefreshOrdersBtn_OnClick"/>
-                                        <Button Content="Просмотреть подробности"
-                                                Name="CheckOrderBtn"
+                                        <Button Content="Изменить"
+                                                Name="EditOrderBtn"
                                                 IsEnabled="False"
-                                                Click="CheckOrderBtn_OnClick"/>
+                                                Click="EditOrderBtn_OnClick"/>
                                 </StackPanel>
                                 <DataGrid Name="OrdersDGrid"
                                           ItemsSource="{Binding OrdersList}"
@@ -183,7 +183,24 @@
                 
                 <!-- Вкладка 5: Отчеты -->
                 <TabItem Header="Отчеты">
-                        <TextBlock Margin="5">Окно отчетов</TextBlock>
+                        <StackPanel Orientation="Vertical"
+                                    Spacing="10"
+                                    Margin="20"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left">
+                                <Button Name="AllOrdersReportXlsxBtn"
+                                        Content="Сформировать отчет о всех заказах за смену (.xlsx)"
+                                        Click="AllOrdersReportXlsxBtn_OnClick"/>
+                                <Button Name="AllOrdersReportPdfBtn"
+                                        Content="Сформировать отчет о всех заказах за смену (.pdf)"
+                                        Click="AllOrdersReportPdfBtn_OnClick"/>
+                                <Button Name="PaidOrdersReportXlsxBtn"
+                                        Content="Сформировать отчет о оплаченных заказах за смену (.xlsx)"
+                                        Click="PaidOrdersReportXlsxBtn_OnClick"/>
+                                <Button Name="PaidOrdersReportPdfBtn"
+                                        Content="Сформировать отчет о оплаченных заказах за смену (.pdf)"
+                                        Click="PaidOrdersReportPdfBtn_OnClick"/>
+                        </StackPanel>
                 </TabItem>
                 
                 <!-- Вкладка 6: Профиль -->

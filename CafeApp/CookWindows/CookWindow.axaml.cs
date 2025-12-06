@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using CafeApp.Helpers;
 using CafeApp.Models;
 using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
@@ -58,7 +57,7 @@ public partial class CookWindow : Window
     {
         var selectedOrder = _ordersDataGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder, CurrentShift, GetUserRole()).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, CurrentShift).ShowDialog(this);
     }
 
     private void LogOutBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -68,6 +67,4 @@ public partial class CookWindow : Window
     }
     
     private Shift GetCurrentShift() => _db.Shifts.First(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
-    
-    private Role GetUserRole() => _db.Roles.First(x => x.Name == Roles.COOK_ROLE);
 }
