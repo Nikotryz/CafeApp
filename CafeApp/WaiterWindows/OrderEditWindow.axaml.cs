@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -94,7 +97,7 @@ public partial class OrderEditWindow : Window
     
     private void LoadPaymentMethods() => _paymentMethodComboBox.ItemsSource = PaymentMethods;
 
-    private void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
+    private async void SaveBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var order = _editOrder ?? new Order();
 
@@ -134,11 +137,12 @@ public partial class OrderEditWindow : Window
             ShowMessage("Не все поля заполнены");
             return;
         }
+        
+        if (order.CompletedAt == null && (order.Status == OrderStatuses.COMPLETED || order.Status == OrderStatuses.PAID))
+            order.CompletedAt = TimeOnly.FromDateTime(DateTime.Now.ToLocalTime());
 
         if (_editOrder != null)
         {
-            if (order.Status == OrderStatuses.COMPLETED)
-                order.CompletedAt = TimeOnly.FromDateTime(DateTime.Now.ToLocalTime());
             _db.Update(order);
         }
         else
@@ -147,12 +151,31 @@ public partial class OrderEditWindow : Window
             _db.Add(order);
         }
         
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
+        
+        if (order.Status == OrderStatuses.PAID)
+        {
+            var pathToSave = await GetPathToSaveAsync(order);
+            if (pathToSave != null)
+                await PKOFactory.MakePKO(order, pathToSave);
+        }
         
         Close();
     }
 
     private void CancelBtn_OnClick(object? sender, RoutedEventArgs e) => Close();
+
+    private async Task<string?> GetPathToSaveAsync(Order order)
+    {
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Сохранить ПКО",
+            SuggestedFileName = $"ПКО_№{order.Id}.xlsx",
+            FileTypeChoices = new[] { new FilePickerFileType("Excel Files") { Patterns = ["*.xlsx"] } }
+        });
+        
+        return file?.TryGetLocalPath();
+    }
 
     private void ShowMessage(string message)
     {

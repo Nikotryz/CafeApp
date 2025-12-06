@@ -7,6 +7,7 @@ using CafeApp.Helpers;
 using CafeApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using OfficeOpenXml;
 
 namespace CafeApp;
 
@@ -37,6 +38,8 @@ public partial class App : Application
     {
         var collection = new ServiceCollection();
         collection.AddDbContext<CafeDbContext>();
+        
+        ExcelPackage.License.SetNonCommercialPersonal("Nikotryz");
 
         var services = collection.BuildServiceProvider();
         

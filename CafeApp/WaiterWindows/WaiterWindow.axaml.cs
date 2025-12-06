@@ -70,6 +70,8 @@ public partial class WaiterWindow : Window
         
         _db.Orders.Remove(selectedOrder);
         _db.SaveChanges();
+        
+        LoadOrders();
     }
 
     private void EditOrderBtn_OnClick(object? sender, RoutedEventArgs e)

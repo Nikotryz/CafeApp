@@ -20,6 +20,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+        <PackageReference Include="EPPlus" Version="8.3.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11">
           <PrivateAssets>all</PrivateAssets>
@@ -46,5 +47,10 @@
         <DependentUpon>UserEditWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resourses\ПКО.xlsx" />
+      <EmbeddedResource Include="Resources\ПКО.xlsx" />
     </ItemGroup>
 </Project>
