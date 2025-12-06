@@ -37,19 +37,19 @@ public partial class MainWindow : Window
             return;
         }
         
-        var userAuth = _db.Users
+        var user = _db.Users
             .Include(x => x.Role)
             .FirstOrDefault(u => u.Login == _loginTBox.Text);
-        var passwordIsValid = PasswordHasher.IsValid(_passwordTBox.Text, userAuth?.PasswordHash ?? string.Empty);
+        var passwordIsValid = PasswordHasher.IsValid(_passwordTBox.Text, user?.PasswordHash ?? string.Empty);
         
-        if (userAuth == null || !passwordIsValid)
+        if (user == null || !passwordIsValid)
         {
             _messageTBlock.Text = "Введенные логин или пароль неверны";
             _messageTBlock.IsVisible = true;
             return;
         }
         
-        var userRole = userAuth.Role;
+        var userRole = user.Role;
 
         switch (userRole.Name)
         {
@@ -63,6 +63,8 @@ public partial class MainWindow : Window
                 new WaiterWindow().Show();
                 break;
         }
+        
+        App.CurrentUser = user;
         
         Close();
     }

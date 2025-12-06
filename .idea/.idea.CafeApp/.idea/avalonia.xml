@@ -16,6 +16,7 @@
         <entry key="CafeApp/ShiftEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/UserEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/WaiterWindows/OrderEditWindow.axaml" value="CafeApp/CafeApp.csproj" />
+        <entry key="CafeApp/WaiterWindows/WaiterReportWindow.axaml" value="CafeApp/CafeApp.csproj" />
         <entry key="CafeApp/WaiterWindows/WaiterWindow.axaml" value="CafeApp/CafeApp.csproj" />
       </map>
     </option>

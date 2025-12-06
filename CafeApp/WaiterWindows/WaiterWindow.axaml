@@ -62,7 +62,11 @@
                 
                 <!-- Вкладка 2: Отчеты -->
                 <TabItem Header="Отчеты">
-                        
+                        <Button Name="MakeReportBtn"
+                                Content="Сформировать отчет за смену"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Click="MakeReportBtn_OnClick"/>
                 </TabItem>
                 
                 <!-- Вкладка 3: Профиль -->

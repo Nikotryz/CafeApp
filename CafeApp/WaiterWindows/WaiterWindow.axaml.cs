@@ -86,4 +86,6 @@ public partial class WaiterWindow : Window
     private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
 
     private Role GetUserRole() => _db.Roles.First(x => x.Name == Roles.WAITER_ROLE);
+
+    private void MakeReportBtn_OnClick(object? sender, RoutedEventArgs e) => new WaiterReportWindow(GetCurrentShift()).ShowDialog(this);
 }

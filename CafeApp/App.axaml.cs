@@ -16,6 +16,8 @@ public partial class App : Application
     public IServiceProvider Services { get; private set; }
     
     public new static App Current => (App)Application.Current!;
+
+    public static User CurrentUser { get; set; } = null!;
     
     public override void Initialize()
     {
