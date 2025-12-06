@@ -26,11 +26,12 @@ public partial class OrderEditWindow : Window
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
+    public bool IsWaiter { get; set; }
     public List<Table> Tables { get; set; } = [];
     public List<string> Statuses { get; set; } = OrderStatuses.List;
     public List<string> PaymentMethods { get; set; } = CafeApp.Helpers.PaymentMethods.List;
 
-    public OrderEditWindow(Shift currentShift)
+    public OrderEditWindow(Shift currentShift, Role role)
     {
         InitializeComponent();
         
@@ -44,13 +45,16 @@ public partial class OrderEditWindow : Window
         _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
 
         _currentShift = currentShift;
+        IsWaiter = role.Name == Roles.WAITER_ROLE;
 
+        EnableFields();
+        
         LoadTables();
         LoadStatuses();
         LoadPaymentMethods();
     }
 
-    public OrderEditWindow(Order order, Shift currentShift) : this(currentShift)
+    public OrderEditWindow(Order order, Shift currentShift, Role role) : this(currentShift, role)
     {
         _editOrder = order;
         
@@ -60,6 +64,15 @@ public partial class OrderEditWindow : Window
         _clientsAmountTextBox.Text = _editOrder.ClientsAmount.ToString();
         _contentTextBox.Text = _editOrder.Content;
         _totalAmountTextBox.Text = _editOrder.TotalAmount.ToString("F", new CultureInfo("ru-RU"));
+    }
+
+    public void EnableFields()
+    {
+        _tableComboBox.IsEnabled = IsWaiter;
+        _paymentMethodComboBox.IsEnabled = IsWaiter;
+        _clientsAmountTextBox.IsEnabled = IsWaiter;
+        _contentTextBox.IsEnabled = IsWaiter;
+        _totalAmountTextBox.IsEnabled = IsWaiter;
     }
 
     private void LoadTables() => _tableComboBox.ItemsSource = _db.Tables.ToList();

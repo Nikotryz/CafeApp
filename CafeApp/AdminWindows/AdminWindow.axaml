@@ -37,26 +37,21 @@
                                           CanUserReorderColumns="False"
                                           CanUserResizeColumns="True"
                                           ColumnWidth="auto"
+                                          IsReadOnly="True"
                                           SelectionChanged="UsersDataGrid_OnSelectionChanged">
                                         <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Логин" 
-                                                                    Binding="{Binding Login}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding Login}"/>
                                                 <DataGridTextColumn Header="Фамилия" 
-                                                                    Binding="{Binding LastName}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding LastName}"/>
                                                 <DataGridTextColumn Header="Имя" 
-                                                                    Binding="{Binding Name}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding Name}"/>
                                                 <DataGridTextColumn Header="Отчество" 
-                                                                    Binding="{Binding MiddleName}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding MiddleName}"/>
                                                 <DataGridTextColumn Header="Роль" 
-                                                                    Binding="{Binding Role.Name}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding Role.Name}"/>
                                                 <DataGridTextColumn Header="Статус" 
-                                                                    Binding="{Binding Status}"
-                                                                    IsReadOnly="True"/>
+                                                                    Binding="{Binding Status}"/>
                                         </DataGrid.Columns>
                                 </DataGrid>
                         </StackPanel>
