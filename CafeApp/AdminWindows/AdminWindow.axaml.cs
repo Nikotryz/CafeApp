@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using CafeApp.Helpers;
 using CafeApp.Models;
+using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,18 +15,22 @@ public partial class AdminWindow : Window
     private readonly DataGrid _usersDGrid;
     private readonly DataGrid _shiftsDGrid;
     private readonly DataGrid _tablesDGrid;
+    private readonly DataGrid _ordersDGrid;
     
     private readonly Button _userEditBtn;
     private readonly Button _shiftEditBtn;
     private readonly Button _userDeleteBtn;
     private readonly Button _shiftDeleteBtn;
     private readonly Button _deleteTableBtn;
+    private readonly Button _checkOrderBtn;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
     public List<User> UsersList { get; set; } = [];
     public List<Shift> ShiftsList { get; set; } = [];
     public List<Table> TablesList { get; set; } = [];
+    
+    public List<Order> OrdersList { get; set; } = [];
     
     public AdminWindow()
     {
@@ -33,38 +39,41 @@ public partial class AdminWindow : Window
         _usersDGrid = this.FindControl<DataGrid>("UsersDGrid")!;
         _shiftsDGrid = this.FindControl<DataGrid>("ShiftsDGrid")!;
         _tablesDGrid = this.FindControl<DataGrid>("TablesDGrid")!;
+        _ordersDGrid = this.FindControl<DataGrid>("OrdersDGrid")!;
         
         _userEditBtn = this.FindControl<Button>("UserEditBtn")!;
         _shiftEditBtn = this.FindControl<Button>("ShiftEditBtn")!;
         _userDeleteBtn = this.FindControl<Button>("UserDeleteBtn")!;
         _shiftDeleteBtn = this.FindControl<Button>("ShiftDeleteBtn")!;
         _deleteTableBtn = this.FindControl<Button>("DeleteTableBtn")!;
+        _checkOrderBtn = this.FindControl<Button>("CheckOrderBtn")!;
 
         LoadUsers();
         LoadShifts();
         LoadTables();
+        LoadOrders();
     }
 
-    private void LoadUsers()
-    {
+    private void LoadUsers() =>
         _usersDGrid.ItemsSource = _db.Users
             .Include(x => x.Role)
             .ToList();
-    }
 
-    private void LoadShifts()
-    {
+    private void LoadShifts() =>
         _shiftsDGrid.ItemsSource = _db.Shifts
             .Include(x => x.Users)
             .Include(x => x.Orders)
             .Include(x => x.WaiterTables)
             .ToList();
-    } 
     
-    private void LoadTables()
-    {
-        _tablesDGrid.ItemsSource = _db.Tables.ToList();
-    }
+    private void LoadTables() => _tablesDGrid.ItemsSource = _db.Tables.ToList();
+    
+    private void LoadOrders() =>
+        _ordersDGrid.ItemsSource = _db.Orders
+            .Include(x => x.Shift)
+            .Include(x => x.Table)
+            .OrderBy(x => x.Shift)
+            .ToList();
 
     private void LogOutBtn_OnClick(object? sender, RoutedEventArgs e)
     {
@@ -147,9 +156,22 @@ public partial class AdminWindow : Window
 
     private void AddTableBtn_OnClick(object? sender, RoutedEventArgs e) => new AddTableWindow().ShowDialog(this);
     
+    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _checkOrderBtn.IsEnabled = _ordersDGrid.SelectedItem != null;
+    
     private void RefreshUsersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadUsers();
 
     private void RefreshShiftsBtn_OnClick(object? sender, RoutedEventArgs e) => LoadShifts();
     
     private void RefreshTablesBtn_OnClick(object? sender, RoutedEventArgs e) => LoadTables();
+
+    private void CheckOrderBtn_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var selectedOrder = _ordersDGrid.SelectedItem as Order;
+        if (selectedOrder != null)
+            new OrderEditWindow(selectedOrder, selectedOrder.Shift, GetUserRole()).ShowDialog(this);
+    }
+    
+    private void RefreshOrdersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadOrders();
+    
+    private Role GetUserRole() => _db.Roles.First(x => x.Name == Roles.ADMIN_ROLE);
 }

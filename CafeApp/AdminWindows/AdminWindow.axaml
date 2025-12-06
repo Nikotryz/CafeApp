@@ -141,7 +141,44 @@
                 
                 <!-- Вкладка 4: Заказы -->
                 <TabItem Header="Заказы">
-                        <TextBlock Margin="5">Окно смен</TextBlock>
+                        <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            Spacing="10">
+                                        <Button Name="RefreshOrdersBtn"
+                                                Content="Обновить"
+                                                Click="RefreshOrdersBtn_OnClick"/>
+                                        <Button Content="Просмотреть подробности"
+                                                Name="CheckOrderBtn"
+                                                IsEnabled="False"
+                                                Click="CheckOrderBtn_OnClick"/>
+                                </StackPanel>
+                                <DataGrid Name="OrdersDGrid"
+                                          ItemsSource="{Binding OrdersList}"
+                                          AutoGenerateColumns="False"
+                                          CanUserReorderColumns="False"
+                                          CanUserResizeColumns="True"
+                                          ColumnWidth="auto"
+                                          IsReadOnly="True"
+                                          SelectionChanged="OrdersDataGrid_OnSelectionChanged">
+                                        <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Столик" 
+                                                                    Binding="{Binding Table.Number}"/>
+                                                <DataGridTextColumn Header="Кол-во клиентов" 
+                                                                    Binding="{Binding ClientsAmount}"/>
+                                                <DataGridTextColumn Header="Статус" 
+                                                                    Binding="{Binding Status}"/>
+                                                <DataGridTextColumn Header="Смена" 
+                                                                    Binding="{Binding Shift.ShiftStarted, StringFormat=dd.MM.yyyy}"/>
+                                                <DataGridTextColumn Header="Сделан в" 
+                                                                    Binding="{Binding CreatedAt, StringFormat=HH:mm}"/>
+                                                <DataGridTextColumn Header="Выполнен в" 
+                                                                    Binding="{Binding CompletedAt, StringFormat=HH:mm, TargetNullValue='Не выполнен'}"/>
+                                                <DataGridTextColumn Header="Содержимое заказа" 
+                                                                    Binding="{Binding Content}"/>
+                                        </DataGrid.Columns>
+                                </DataGrid>
+                        </StackPanel>
                 </TabItem>
                 
                 <!-- Вкладка 5: Отчеты -->

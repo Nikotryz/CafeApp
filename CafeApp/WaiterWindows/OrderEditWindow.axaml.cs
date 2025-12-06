@@ -20,9 +20,13 @@ public partial class OrderEditWindow : Window
     private readonly TextBox _totalAmountTextBox;
     
     private readonly TextBlock _errorTextBlock;
+    
+    private readonly Button _saveBtn;
+    private readonly Button _cancelBtn;
 
     private readonly Order? _editOrder;
     private readonly Shift _currentShift;
+    private readonly Role _currentRole;
     
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
@@ -43,8 +47,12 @@ public partial class OrderEditWindow : Window
         _totalAmountTextBox = this.FindControl<TextBox>("TotalAmountTextBox")!;
         
         _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
+        
+        _saveBtn = this.FindControl<Button>("SaveBtn")!;
+        _cancelBtn = this.FindControl<Button>("CancelBtn")!;
 
         _currentShift = currentShift;
+        _currentRole = role;
         IsWaiter = role.Name == Roles.WAITER_ROLE;
 
         EnableFields();
@@ -66,13 +74,18 @@ public partial class OrderEditWindow : Window
         _totalAmountTextBox.Text = _editOrder.TotalAmount.ToString("F", new CultureInfo("ru-RU"));
     }
 
-    public void EnableFields()
+    private void EnableFields()
     {
         _tableComboBox.IsEnabled = IsWaiter;
         _paymentMethodComboBox.IsEnabled = IsWaiter;
         _clientsAmountTextBox.IsEnabled = IsWaiter;
         _contentTextBox.IsEnabled = IsWaiter;
         _totalAmountTextBox.IsEnabled = IsWaiter;
+        
+        _statusComboBox.IsEnabled = _currentRole.Name != Roles.ADMIN_ROLE;
+        
+        _saveBtn.IsVisible = _currentRole.Name != Roles.ADMIN_ROLE;
+        _cancelBtn.Content = _currentRole.Name != Roles.ADMIN_ROLE ?  "Отмена" : "OK";
     }
 
     private void LoadTables() => _tableComboBox.ItemsSource = _db.Tables.ToList();

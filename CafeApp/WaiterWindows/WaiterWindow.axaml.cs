@@ -44,6 +44,7 @@ public partial class WaiterWindow : Window
         _ordersDataGrid.ItemsSource = _db.Orders
             .Include(x => x.Shift)
             .Include(x => x.Table)
+            .Where(x => x.Shift == CurrentShift)
             .ToList();
     }
 
