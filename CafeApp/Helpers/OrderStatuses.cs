@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace CafeApp.Helpers;
 
-public class OrderStatuses
+public static class OrderStatuses
 {
     public static List<string> List = [ ACCEPTED, COOKING, COMPLETED ];
     

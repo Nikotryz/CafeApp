@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using CafeApp.Models;
+using CafeApp.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeApp.AdminWindows;

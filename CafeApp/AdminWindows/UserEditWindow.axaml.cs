@@ -51,7 +51,7 @@ public partial class UserEditWindow : Window
         
         _errorTextBlock = this.FindControl<TextBlock>("ErrorTextBlock")!;
         
-        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == CafeApp.Roles.WAITER_ROLE);
+        var defaultRole = _db.Roles.FirstOrDefault(x => x.Name == CafeApp.Helpers.Roles.WAITER_ROLE);
         
         _roleCBox!.ItemsSource = _db.Roles.ToList();
         _roleCBox.SelectedItem = defaultRole;

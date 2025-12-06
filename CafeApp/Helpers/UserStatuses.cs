@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace CafeApp;
+namespace CafeApp.Helpers;
 
-public class UserStatuses
+public static class UserStatuses
 {
     public static List<string> List = [ USER_WORKED, USER_FIRED ];
     

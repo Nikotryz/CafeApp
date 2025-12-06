@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 
-namespace CafeApp;
+namespace CafeApp.Helpers;
 
 public static class MyExtensions
 {

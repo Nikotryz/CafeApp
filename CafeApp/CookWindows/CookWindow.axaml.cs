@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using CafeApp.Helpers;
 using CafeApp.Models;
 using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
