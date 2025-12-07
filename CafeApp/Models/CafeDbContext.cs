@@ -30,7 +30,7 @@ public class CafeDbContext : DbContext
         var connectionString2 =
             "Host=localhost;Port=5432;Database=cafe_db;Username=postgres;Password=900440";
         
-        optionsBuilder.UseNpgsql(connectionString2);
+        optionsBuilder.UseNpgsql(connectionString1);
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
