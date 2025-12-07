@@ -70,7 +70,7 @@ public partial class App : Application
             {
                 var newAdmin = new User
                 {
-                    Role = db.Roles.FirstOrDefault(x => x.Name == Roles.ADMIN_ROLE),
+                    Role = db.Roles.First(x => x.Name == Roles.ADMIN_ROLE),
                     Login = "Nikotryz",
                     PasswordHash = PasswordHasher.HashPassword("900440"),
                     Name = "Никита",

@@ -200,6 +200,12 @@
                                 <Button Name="PaidOrdersReportPdfBtn"
                                         Content="Сформировать отчет о оплаченных заказах за смену (.pdf)"
                                         Click="PaidOrdersReportPdfBtn_OnClick"/>
+                                
+                                <TextBlock Name="ReportErrorTextBlock"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Red"
+                                           IsVisible="False"/>
+                                
                         </StackPanel>
                 </TabItem>
                 

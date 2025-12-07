@@ -27,6 +27,8 @@ public partial class AdminWindow : Window
     private readonly Button _deleteTableBtn;
     private readonly Button _editOrderBtn;
     
+    private readonly TextBlock _reportErrorTextBlock;
+    
     private readonly CafeDbContext _db = App.Current.Services.GetRequiredService<CafeDbContext>();
     
     public List<User> UsersList { get; set; } = [];
@@ -50,6 +52,8 @@ public partial class AdminWindow : Window
         _shiftDeleteBtn = this.FindControl<Button>("ShiftDeleteBtn")!;
         _deleteTableBtn = this.FindControl<Button>("DeleteTableBtn")!;
         _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
+        
+        _reportErrorTextBlock = this.FindControl<TextBlock>("ReportErrorTextBlock")!;
 
         LoadUsers();
         LoadShifts();
@@ -229,6 +233,13 @@ public partial class AdminWindow : Window
     
     private async Task<string?> GetPathToSaveAsync(Shift shift, bool pdf = false)
     {
+        if (shift == null)
+        {
+            _reportErrorTextBlock.Text = "Смена отсутствует";
+            _reportErrorTextBlock.IsVisible = true;
+            return null;
+        }
+        
         var type = pdf ? "pdf" : "xlsx";
         var filesType = pdf ? "Pdf Files" : "Excel Files";
         var patterns = pdf ? "*.pdf" : "*.xlsx";

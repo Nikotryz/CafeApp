@@ -50,7 +50,10 @@ public partial class MainWindow : Window
         
         var shift = _db.Shifts
             .Include(x => x.Users)
-            .FirstOrDefault(x => x.ShiftStarted <= DateTime.Now.ToLocalTime() && x.ShiftEnds >= DateTime.Now.ToLocalTime() && x.Users.Contains(user));
+            .FirstOrDefault(x => 
+                x.ShiftStarted <= DateTime.Now.ToLocalTime() && 
+                x.ShiftEnds >= DateTime.Now.ToLocalTime() && 
+                (x.Users.Contains(user) || user.Role.Name == Roles.ADMIN_ROLE));
         
         if (shift != null)
             App.CurrentShift = shift;

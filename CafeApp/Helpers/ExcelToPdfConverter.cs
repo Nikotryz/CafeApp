@@ -17,12 +17,11 @@ public static class ExcelToPdfConverter
         {
             PageSetup pageSetup = worksheet.PageSetup;
             pageSetup.Orientation = PageOrientationType.Landscape;
+            pageSetup.FitToPagesTall = 0;
         }
         
         File.Delete(pathToSave);
         
-        var pathWithoutType = pathToSave.Split('.')[0];
-        
-        await workbook.SaveAsync($"{pathWithoutType}.pdf");
+        await workbook.SaveAsync(pathToSave.Replace(".xlsx", ".pdf"));
     }
 }

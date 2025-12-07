@@ -52,8 +52,15 @@
 
     <ItemGroup>
       <None Remove="Resourses\ПКО.xlsx" />
-      <EmbeddedResource Include="Resources\ПКО.xlsx" />
+      <EmbeddedResource Include="Resources\ПКО.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
       <None Remove="Resources\AdminReport.xlsx" />
-      <EmbeddedResource Include="Resources\AdminReport.xlsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\AdminReport.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 </Project>
