@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using CafeApp.Helpers;
 using CafeApp.Models;
 using CafeApp.WaiterWindows;
 using Microsoft.EntityFrameworkCore;
@@ -30,26 +31,19 @@ public partial class CookWindow : Window
         _currentShiftTextBlock = this.FindControl<TextBlock>("CurrentShiftTextBlock")!;
         _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
         
-        CurrentShift = GetCurrentShift();
-        
-        _currentShiftTextBlock.Text = GetCurrentShift().ShiftStarted.ToString("dd.MM.yyyy HH:mm");
+        _currentShiftTextBlock.Text = App.CurrentShift.ToStartAndEndTimeString();
 
         LoadOrders();
     }
     
-    private void LoadOrders()
-    {
+    private void LoadOrders() => 
         _ordersDataGrid.ItemsSource = _db.Orders
-            .Include(x => x.Shift)
-            .Include(x => x.Table)
-            .Where(x => x.Shift == CurrentShift)
-            .ToList();
-    }
+        .Include(x => x.Shift)
+        .Include(x => x.Table)
+        .Where(x => x.Shift == App.CurrentShift)
+        .ToList();
     
-    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        _editOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
-    }
+    private void OrdersDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _editOrderBtn.IsEnabled = _ordersDataGrid.SelectedItem != null;
     
     private void RefreshOrdersBtn_OnClick(object? sender, RoutedEventArgs e) => LoadOrders();
     
@@ -57,7 +51,7 @@ public partial class CookWindow : Window
     {
         var selectedOrder = _ordersDataGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder, CurrentShift).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, App.CurrentShift).ShowDialog(this);
     }
 
     private void LogOutBtn_OnClick(object? sender, RoutedEventArgs e)
@@ -65,6 +59,4 @@ public partial class CookWindow : Window
         new MainWindow().Show();
         Close();
     }
-    
-    private Shift GetCurrentShift() => _db.Shifts.First(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
 }

@@ -20,7 +20,7 @@ public partial class WaiterWindow : Window
     private readonly Button _deleteOrderBtn;
     private readonly Button _editOrderBtn;
 
-    public Shift? CurrentShift { get; set; }
+    public Shift CurrentShift { get; set; } = null!;
     public List<Order> Orders { get; set; } = [];
     
     public WaiterWindow()
@@ -31,10 +31,10 @@ public partial class WaiterWindow : Window
         _deleteOrderBtn = this.FindControl<Button>("DeleteOrderBtn")!;
         _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
         _currentShiftTextBlock = this.FindControl<TextBlock>("CurrentShiftTextBlock")!;
-        
-        CurrentShift = GetCurrentShift();
 
-        _currentShiftTextBlock.Text = GetCurrentShift()?.ShiftStarted.ToString("dd.MM.yyyy HH:mm");
+        var shift = App.CurrentShift;
+        var shiftText = $"{shift.ShiftStarted.ToString("dd.MM.yyyy HH:mm")} - {shift.ShiftEnds.ToString("HH:mm")}";
+        _currentShiftTextBlock.Text = shiftText;
         
         LoadOrders();
     }
@@ -78,12 +78,10 @@ public partial class WaiterWindow : Window
     {
         var selectedOrder = _ordersDataGrid.SelectedItem as Order;
         if (selectedOrder != null)
-            new OrderEditWindow(selectedOrder, CurrentShift).ShowDialog(this);
+            new OrderEditWindow(selectedOrder, App.CurrentShift).ShowDialog(this);
     }
 
-    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow(CurrentShift).ShowDialog(this);
-    
-    private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
+    private void AddOrderBtn_OnClick(object? sender, RoutedEventArgs e) => new OrderEditWindow(App.CurrentShift).ShowDialog(this);
 
-    private void MakeReportBtn_OnClick(object? sender, RoutedEventArgs e) => new WaiterReportWindow(GetCurrentShift()).ShowDialog(this);
+    private void MakeReportBtn_OnClick(object? sender, RoutedEventArgs e) => new WaiterReportWindow(App.CurrentShift).ShowDialog(this);
 }

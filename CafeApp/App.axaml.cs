@@ -19,6 +19,8 @@ public partial class App : Application
 
     public static User CurrentUser { get; set; } = null!;
     
+    public static Shift CurrentShift { get; set; } = null!;
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);

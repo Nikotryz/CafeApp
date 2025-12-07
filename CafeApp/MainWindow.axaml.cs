@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Linq;
@@ -32,8 +33,7 @@ public partial class MainWindow : Window
     {
         if (string.IsNullOrWhiteSpace(_loginTBox.Text) || string.IsNullOrWhiteSpace(_passwordTBox.Text))
         {
-            _messageTBlock.Text = "Поля логина или пароля пустые";
-            _messageTBlock.IsVisible = true;
+            ShowMessage("Поля логина или пароля пустые");
             return;
         }
         
@@ -44,28 +44,47 @@ public partial class MainWindow : Window
         
         if (user == null || !passwordIsValid)
         {
-            _messageTBlock.Text = "Введенные логин или пароль неверны";
-            _messageTBlock.IsVisible = true;
+            ShowMessage("Введенные логин или пароль неверны");
             return;
         }
         
-        var userRole = user.Role;
-
-        switch (userRole.Name)
+        var shift = _db.Shifts
+            .Include(x => x.Users)
+            .FirstOrDefault(x => x.ShiftStarted <= DateTime.Now.ToLocalTime() && x.ShiftEnds >= DateTime.Now.ToLocalTime() && x.Users.Contains(user));
+        
+        if (shift != null)
+            App.CurrentShift = shift;
+        App.CurrentUser = user;
+        
+        switch (user.Role.Name)
         {
             case Roles.ADMIN_ROLE:
                 new AdminWindow().Show();
                 break;
             case Roles.COOK_ROLE:
+                if (shift == null)
+                {
+                    ShowMessage("У вас не назначена смена");
+                    return;
+                }
                 new CookWindow().Show();
                 break;
             case Roles.WAITER_ROLE:
+                if (shift == null)
+                {
+                    ShowMessage("У вас не назначена смена");
+                    return;
+                }
                 new WaiterWindow().Show();
                 break;
         }
         
-        App.CurrentUser = user;
-        
         Close();
+    }
+
+    private void ShowMessage(string message)
+    {
+        _messageTBlock.Text = message;
+        _messageTBlock.IsVisible = true;
     }
 }

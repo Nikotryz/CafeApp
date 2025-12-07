@@ -104,11 +104,8 @@ public partial class AdminWindow : Window
     private async void UserEditBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedUser = _usersDGrid.SelectedItem as User;
-        if (selectedUser == null)
-            return;
-        
-        await new UserEditWindow(selectedUser).ShowDialog(this);
-        LoadUsers();
+        if (selectedUser != null)
+            await new UserEditWindow(selectedUser).ShowDialog(this);
     }
     
     private void AddUserBtn_OnClick(object? sender, RoutedEventArgs e) => new UserEditWindow().ShowDialog(this);
@@ -133,16 +130,10 @@ public partial class AdminWindow : Window
     private async void ShiftEditBtn_OnClick(object? sender, RoutedEventArgs e)
     {
         var selectedShift = _shiftsDGrid.SelectedItem as Shift;
-        if (selectedShift == null)
-            return;
-        
-        await new ShiftEditWindow(selectedShift).ShowDialog(this);
-        LoadShifts();
+        if (selectedShift != null)
+            await new ShiftEditWindow(selectedShift).ShowDialog(this);
     }
-    private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e)
-    {
-        new ShiftEditWindow().ShowDialog(this);
-    }
+    private void AddShiftBtn_OnClick(object? sender, RoutedEventArgs e) => new ShiftEditWindow().ShowDialog(this);
 
     private void TablesDataGrid_OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => _deleteTableBtn.IsEnabled = _tablesDGrid.SelectedItem != null;
 
@@ -182,14 +173,9 @@ public partial class AdminWindow : Window
 
     private async void AllOrdersReportXlsxBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var currentShift = GetCurrentShift();
-        
-        if (currentShift == null)
-            throw new NotImplementedException("Смена отсутствует");
-
         var orders = GetOrders();
 
-        var pathToSave = await GetPathToSaveAsync(currentShift);
+        var pathToSave = await GetPathToSaveAsync(App.CurrentShift);
 
         if (pathToSave != null)
             await ReportFactory.MakeReport(orders, pathToSave);
@@ -197,29 +183,20 @@ public partial class AdminWindow : Window
 
     private async void AllOrdersReportPdfBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var currentShift = GetCurrentShift();
-        
-        if (currentShift == null)
-            throw new NotImplementedException("Смена отсутствует");
-
         var orders = GetOrders();
 
-        var pathToSave = await GetPathToSaveAsync(currentShift/*, pdf: true*/);
+        var pathToSavePdf = await GetPathToSaveAsync(App.CurrentShift, pdf: true);
+        var pathToSaveExcel = pathToSavePdf?.Replace("pdf", "xlsx");
 
-        if (pathToSave != null)
-            await ReportFactory.MakeReport(orders, pathToSave, isPdf: true);
+        if (pathToSaveExcel != null)
+            await ReportFactory.MakeReport(orders, pathToSaveExcel, isPdf: true);
     }
 
     private async void PaidOrdersReportXlsxBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var currentShift = GetCurrentShift();
-        
-        if (currentShift == null)
-            throw new NotImplementedException("Смена отсутствует");
-        
         var orders = GetOrders(paid: true);
 
-        var pathToSave = await GetPathToSaveAsync(currentShift);
+        var pathToSave = await GetPathToSaveAsync(App.CurrentShift);
 
         if (pathToSave != null)
             await ReportFactory.MakeReport(orders, pathToSave);
@@ -227,30 +204,21 @@ public partial class AdminWindow : Window
 
     private async void PaidOrdersReportPdfBtn_OnClick(object? sender, RoutedEventArgs e)
     {
-        var currentShift = GetCurrentShift();
-        
-        if (currentShift == null)
-            throw new NotImplementedException("Смена отсутствует");
-        
         var orders = GetOrders(paid: true);
 
-        var pathToSave = await GetPathToSaveAsync(currentShift/*, pdf: true*/);
+        var pathToSavePdf = await GetPathToSaveAsync(App.CurrentShift, pdf: true);
+        var pathToSaveExcel = pathToSavePdf?.Replace("pdf", "xlsx");
 
-        if (pathToSave != null)
-            await ReportFactory.MakeReport(orders, pathToSave, isPdf: true);
+        if (pathToSaveExcel != null)
+            await ReportFactory.MakeReport(orders, pathToSaveExcel, isPdf: true);
     }
 
     private List<Order> GetOrders(bool paid = false)
     {
-        var currentShift = GetCurrentShift();
-        
-        if (currentShift == null)
-            throw new NotImplementedException("Смена отсутствует");
-        
         var orders = _db.Orders
             .Include(x => x.Shift)
             .Include(x => x.Table)
-            .Where(x => x.Shift == currentShift)
+            .Where(x => x.Shift == App.CurrentShift)
             .ToList();
         
         if (paid)
@@ -267,13 +235,11 @@ public partial class AdminWindow : Window
         
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "Сохранить ПКО",
+            Title = "Сохранить отчет",
             SuggestedFileName = $"Отчет_№{shift.Id}_{DateTime.Now.ToLocalTime().ToString("dd_MM_yyyy")}.{type}",
             FileTypeChoices = new[] { new FilePickerFileType(filesType) { Patterns = [patterns] } }
         });
         
         return file?.TryGetLocalPath();
     }
-    
-    private Shift? GetCurrentShift() => _db.Shifts.FirstOrDefault(x => x.ShiftStarted <= DateTime.Now && x.ShiftEnds >= DateTime.Now);
 }
