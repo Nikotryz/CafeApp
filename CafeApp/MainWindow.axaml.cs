@@ -50,6 +50,7 @@ public partial class MainWindow : Window
         
         var shift = _db.Shifts
             .Include(x => x.Users)
+            .Include(x => x.WaiterTables)
             .FirstOrDefault(x => 
                 x.ShiftStarted <= DateTime.Now.ToLocalTime() && 
                 x.ShiftEnds >= DateTime.Now.ToLocalTime() && 

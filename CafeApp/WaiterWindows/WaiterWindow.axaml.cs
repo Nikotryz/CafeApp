@@ -31,10 +31,8 @@ public partial class WaiterWindow : Window
         _deleteOrderBtn = this.FindControl<Button>("DeleteOrderBtn")!;
         _editOrderBtn = this.FindControl<Button>("EditOrderBtn")!;
         _currentShiftTextBlock = this.FindControl<TextBlock>("CurrentShiftTextBlock")!;
-
-        var shift = App.CurrentShift;
-        var shiftText = $"{shift.ShiftStarted.ToString("dd.MM.yyyy HH:mm")} - {shift.ShiftEnds.ToString("HH:mm")}";
-        _currentShiftTextBlock.Text = shiftText;
+        
+        _currentShiftTextBlock.Text = App.CurrentShift.ToStartAndEndTimeString();
         
         LoadOrders();
     }
@@ -44,7 +42,7 @@ public partial class WaiterWindow : Window
         _ordersDataGrid.ItemsSource = _db.Orders
             .Include(x => x.Shift)
             .Include(x => x.Table)
-            .Where(x => x.Shift == CurrentShift)
+            .Where(x => x.Shift == App.CurrentShift)
             .ToList();
     }
 

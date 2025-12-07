@@ -113,6 +113,16 @@ public partial class OrderEditWindow : Window
                 ShowMessage("Итоговая сумма в неправильном формате");
                 return;
             }
+
+            if (App.CurrentShift.WaiterTables.Any())
+            {
+                if (!App.CurrentShift.WaiterTables.Any(x => x.User.Id == App.CurrentUser.Id && x.Table.Id == table.Id))
+                {
+                    ShowMessage("Вы не можете принять заказ с этого столика");
+                    return;
+                }
+            }
+            
             order.Table = table;
             order.Shift = _currentShift;
             order.Status = status;
