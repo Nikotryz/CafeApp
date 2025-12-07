@@ -79,8 +79,8 @@ public partial class OrderEditWindow : Window
     }
 
     private void LoadTables() => _tableComboBox.ItemsSource = _db.Tables.ToList();
-    
-    private void LoadStatuses() => _statusComboBox.ItemsSource = Statuses;
+
+    private void LoadStatuses() => _statusComboBox.ItemsSource = OrderStatuses.List;
     
     private void LoadPaymentMethods() => _paymentMethodComboBox.ItemsSource = PaymentMethods;
 
@@ -114,13 +114,19 @@ public partial class OrderEditWindow : Window
                 return;
             }
 
-            if (App.CurrentShift.WaiterTables.Any())
+            if (App.CurrentShift.WaiterTables.Any() && App.CurrentUser.Role.Name == Roles.WAITER_ROLE)
             {
                 if (!App.CurrentShift.WaiterTables.Any(x => x.User.Id == App.CurrentUser.Id && x.Table.Id == table.Id))
                 {
                     ShowMessage("Вы не можете принять заказ с этого столика");
                     return;
                 }
+            }
+
+            if (!OrderStatuses.AvailableStatuses[App.CurrentUser.Role.Name].Contains(status))
+            {
+                ShowMessage($"Вы не можете поставить статус '{status}' для заказа");
+                return;
             }
             
             order.Table = table;
