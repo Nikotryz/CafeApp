@@ -64,7 +64,9 @@ public partial class App : Application
                 db.SaveChanges();
             }
             
-            var admin = db.Users.FirstOrDefault(x => x.Role.Name == Roles.ADMIN_ROLE);
+            var admin = db.Users
+                .Include(x => x.Role)
+                .FirstOrDefault(x => x.Role.Name == Roles.ADMIN_ROLE);
             
             if (admin == null)
             {

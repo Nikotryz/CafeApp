@@ -7,8 +7,14 @@ public static class PasswordHasher
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
 
-    public static bool IsValid(string password, string hashedPassword)
+    public static bool IsValid(string? password, string? hashedPassword)
     {
+        if (string.IsNullOrEmpty(password))
+            return false;
+        
+        if (string.IsNullOrEmpty(hashedPassword))
+            return false;
+        
         return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 }

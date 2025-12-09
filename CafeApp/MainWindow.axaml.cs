@@ -39,12 +39,18 @@ public partial class MainWindow : Window
         
         var user = _db.Users
             .Include(x => x.Role)
-            .FirstOrDefault(u => u.Login == _loginTBox.Text);
-        var passwordIsValid = PasswordHasher.IsValid(_passwordTBox.Text, user?.PasswordHash ?? string.Empty);
+            .FirstOrDefault(x => x.Login == _loginTBox.Text);
+        var passwordIsValid = PasswordHasher.IsValid(_passwordTBox.Text, user?.PasswordHash);
         
         if (user == null || !passwordIsValid)
         {
             ShowMessage("Введенные логин или пароль неверны");
+            return;
+        }
+
+        if (user.Status == UserStatuses.USER_FIRED)
+        {
+            ShowMessage("Вы уволены");
             return;
         }
         
