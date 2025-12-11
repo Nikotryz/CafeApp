@@ -32,6 +32,8 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.1" />
+        <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="3.116.1" />
         <PackageReference Include="Xaml.Behaviors.Interactions.DragAndDrop" Version="11.3.6" />
     </ItemGroup>
 
